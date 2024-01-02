@@ -6,4 +6,13 @@
     </style>
 
     <style name="Theme.AndroidCarProject" parent="Base.Theme.AndroidCarProject" />
+
+    <style name="Theme.AndroidCarProject.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.AndroidCarProject.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.AndroidCarProject.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

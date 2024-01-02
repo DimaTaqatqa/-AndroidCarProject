@@ -39,6 +39,8 @@ public class ConnectionAsyncTask extends AsyncTask<String, String, String> {
                 ((MainActivity) activity).handleCarsList(cars);
                 /*Intent intent = new Intent(activity, LoginActivity.class);
                 activity.startActivity(intent);*/
+                Intent intent = new Intent(activity, CustomerHomeActivity.class);
+                activity.startActivity(intent);
             } else {
                 // Display an error message for unsuccessful parsing
                 ((MainActivity) activity).setButtonText("Parsing Error");
