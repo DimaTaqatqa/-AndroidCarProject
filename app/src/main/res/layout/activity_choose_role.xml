@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ChooseRole">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-black"
+        android:paddingLeft="120dp"
+        android:paddingTop="25dp"
+        android:text="Tell Us Who You Are"
+        android:textSize="20sp" />
+
+    <ImageButton
+        android:id="@+id/adminButton"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="105dp"
+        android:layout_marginTop="70dp"
+        android:layout_marginEnd="106dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="Admin button"
+        android:scaleType="fitCenter"
+        android:src="@drawable/boss" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/adminButton"
+        android:layout_marginTop="6dp"
+        android:fontFamily="sans-serif-black"
+        android:layout_centerHorizontal="true"
+        android:text="Admin"
+        android:textSize="20sp" />
+
+    <ImageButton
+        android:id="@+id/customerButton"
+        android:layout_width="250dp"
+        android:layout_height="125dp"
+        android:layout_below="@+id/adminButton"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="78dp"
+        android:layout_marginTop="172dp"
+        android:layout_marginEnd="82dp"
+        android:contentDescription="Customer button"
+        android:background="@android:color/transparent"
+        android:scaleType="fitCenter"
+        android:src="@drawable/customer" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-black"
+        android:layout_below="@+id/customerButton"
+        android:text="Customer"
+        android:layout_centerHorizontal="true"
+        android:textSize="20sp" />
+
+</RelativeLayout>
