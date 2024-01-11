@@ -1,4 +1,4 @@
-package birzeit.edu.androidcarproject.ui.gallery;
+package birzeit.edu.androidcarproject.ui.favorites;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,22 +10,19 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import birzeit.edu.androidcarproject.databinding.FragmentGalleryBinding;
+import birzeit.edu.androidcarproject.databinding.FragmentFavoritesBinding;
 
-public class GalleryFragment extends Fragment {
+public class FavoritesFragment extends Fragment {
 
-    private FragmentGalleryBinding binding;
+    private FragmentFavoritesBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        GalleryViewModel galleryViewModel =
-                new ViewModelProvider(this).get(GalleryViewModel.class);
 
-        binding = FragmentGalleryBinding.inflate(inflater, container, false);
+
+        binding = FragmentFavoritesBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textGallery;
-        galleryViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 

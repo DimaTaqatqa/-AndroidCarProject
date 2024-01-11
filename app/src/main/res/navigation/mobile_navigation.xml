@@ -10,16 +10,40 @@
         android:name="birzeit.edu.androidcarproject.ui.home.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" />
-
     <fragment
-        android:id="@+id/nav_gallery"
-        android:name="birzeit.edu.androidcarproject.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
-
+        android:id="@+id/nav_carmenu"
+        android:name="birzeit.edu.androidcarproject.ui.carmenu.CarMenuFragment"
+        android:label="@string/menu_carmenu"
+        tools:layout="@layout/fragment_car_menu" />
     <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="birzeit.edu.androidcarproject.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+        android:id="@+id/nav_reservations"
+        android:name="birzeit.edu.androidcarproject.ui.reservations.ReservationsFragment"
+        android:label="@string/menu_reservations"
+        tools:layout="@layout/fragment_reservations" />
+    <fragment
+        android:id="@+id/nav_favorites"
+        android:name="birzeit.edu.androidcarproject.ui.favorites.FavoritesFragment"
+        android:label="@string/menu_favorites"
+        tools:layout="@layout/fragment_favorites" />
+    <fragment
+        android:id="@+id/nav_offers"
+        android:name="birzeit.edu.androidcarproject.ui.offers.OffersFragment"
+        android:label="@string/menu_offers"
+        tools:layout="@layout/fragment_offers" />
+    <fragment
+        android:id="@+id/nav_profile"
+        android:name="birzeit.edu.androidcarproject.ui.profile.ProfileFragment"
+        android:label="@string/menu_profile"
+        tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/nav_call"
+        android:name="birzeit.edu.androidcarproject.ui.call.CallFragment"
+        android:label="@string/menu_call"
+        tools:layout="@layout/fragment_call" />
+    <fragment
+        android:id="@+id/nav_logout"
+        android:name="birzeit.edu.androidcarproject.ui.logout.LogoutFragment"
+        android:label="@string/menu_logout"
+        tools:layout="@layout/fragment_logout" />
+
 </navigation>
