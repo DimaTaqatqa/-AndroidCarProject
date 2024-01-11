@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -19,6 +18,15 @@
             android:exported="false"
             android:label="@string/title_activity_customer_home"
             android:theme="@style/Theme.AndroidCarProject.NoActionBar" />
+        <activity
+            android:name=".ChooseRole"
+            android:exported="false" />
+        <activity
+            android:name=".SignUP"
+            android:exported="false" />
+        <activity
+            android:name=".RegistrationAndLogin"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true">

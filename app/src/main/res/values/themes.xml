@@ -1,8 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.AndroidCarProject" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
     <style name="Theme.AndroidCarProject" parent="Base.Theme.AndroidCarProject" />
@@ -15,4 +13,5 @@
     <style name="Theme.AndroidCarProject.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.AndroidCarProject.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
 </resources>

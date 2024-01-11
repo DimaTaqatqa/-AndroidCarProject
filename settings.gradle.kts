@@ -14,5 +14,6 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "AndroidCarProject"
+
 include(":app")
  
