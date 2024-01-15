@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
         connectButton = findViewById(R.id.connectButton);
         dataBaseHelper = new DataBaseHelper(this);
-        carList = dataBaseHelper.getAllCars();
+//        carList = dataBaseHelper.getAllCars();
 
         connectButton.setOnClickListener(new View.OnClickListener() {
             @Override

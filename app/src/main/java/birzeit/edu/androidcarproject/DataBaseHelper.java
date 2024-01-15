@@ -219,5 +219,12 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
         return carList;
     }
 
+    public boolean deleteCustomer(String email) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int result = db.delete("Customer", "email = ?", new String[]{email});
+        db.close();
+        return result != 0;
+    }
+
 
 }
