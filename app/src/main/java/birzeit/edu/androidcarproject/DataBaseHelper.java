@@ -21,7 +21,6 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Log.d("Database", "onCreate method called");
         String createAdminTable = "CREATE TABLE Admin (" +
                 "email TEXT PRIMARY KEY," +
                 "password_hash TEXT," +
@@ -48,18 +47,34 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
 
         String createCarTable = "CREATE TABLE Car (" +
                 "id INTEGER PRIMARY KEY," +
+                "factoryName TEXT," +
                 "type TEXT," +
-                "factory TEXT," +
+                "price INTEGER," +
                 "model TEXT," +
-                "price TEXT);";
-        Log.d("Database", "Creating tables...");
+                "name TEXT," +
+                "offer INTEGER," +
+                "year TEXT," +
+                "fuelType TEXT," +
+                "rating REAL,"+
+                "accident TEXT);";
+
+        String createReservationTable = "CREATE TABLE Reservation (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "carID INTEGER," +
+                "customerEmail TEXT," +
+                "date TEXT," +
+                "time TEXT);";
+
+        String createFavoritesTable = "CREATE TABLE Favorites (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "carID INTEGER," +
+                "customerEmail TEXT);";
 
         db.execSQL(createAdminTable);
         db.execSQL(createCustomerTable);
         db.execSQL(createCarTable);
-        seedDatabase();
-        Log.d("Database", "Tables created.");
-
+        db.execSQL(createReservationTable);
+        db.execSQL(createFavoritesTable);
     }
 
     @Override
@@ -114,10 +129,16 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
         ContentValues values = new ContentValues();
 
         values.put("id", car.getId());
+        values.put("factoryName", car.getFactoryName());
         values.put("type", car.getType());
-        values.put("factory", car.getFactory());
-        values.put("model", car.getModel());
         values.put("price", car.getPrice());
+        values.put("model", car.getModel());
+        values.put("name", car.getName());
+        values.put("offer", car.getOffer());
+        values.put("year", car.getYear());
+        values.put("fuelType", car.getFuelType());
+        values.put("rating", car.getRating());
+        values.put("accident", car.getAccident());
 
         // Insert the values into the "Car" table
         long result = db.insert("Car", null, values);
@@ -126,37 +147,31 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
         return result != -1;
     }
 
-    public void seedDatabase() {
-        clearDatabase();
+    public boolean insertReservation(Reservation reservation) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
 
-        // Create car
-        String[] types = {"Sedan", "SUV", "Truck", "Coupe", "Convertible"};
-        String[] factories = {"Toyota", "Honda", "Ford", "Chevrolet", "BMW"};
-        String[] models = {"Camry", "Civic", "F-150", "Malibu", "3 Series"};
+        contentValues.put("carID", reservation.getCarID());
+        contentValues.put("customerEmail", reservation.getCustomerEmail());
+        contentValues.put("date", reservation.getDate());
+        contentValues.put("time", reservation.getTime());
 
-        for (int i = 0; i < 25; i++) {
-            // Randomly select values for type, factory, and model
-            String type = types[i % types.length];
-            String factory = factories[i % factories.length];
-            String model = models[i % models.length];
-
-            // Create car objects with unique IDs and values
-            Car car = new Car(
-                    i + 1,
-                    type,
-                    factory,
-                    model,
-                    50000 + i * 1000
-            );
-
-            // Insert each car into the database
-            insertCar(car);
-        }
+        // If insertion is successful then result != -1
+        long result = db.insert("Reservation", null, contentValues);
+        db.close();
+        return result != -1;
     }
+    public boolean insertFavorites(Favorites favorites) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
 
-    private void clearDatabase() {
-        SQLiteDatabase db = getWritableDatabase();
-        db.execSQL("DELETE FROM Car");
+        contentValues.put("carID", favorites.getCarID());
+        contentValues.put("customerEmail", favorites.getCustomerEmail());
+
+        // If insertion is successful then result != -1
+        long result = db.insert("Favorites", null, contentValues);
+        db.close();
+        return result != -1;
     }
 
     public boolean emailExists(String table, String email) {
@@ -192,31 +207,9 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
         return -1;
     }
 
-    public List<Car> getAllCars() {
-        List<Car> carList = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        Cursor cursor = db.rawQuery("SELECT * FROM Car", null);
-        int idIndex = cursor.getColumnIndex("id");
-        int typeIndex = cursor.getColumnIndex("type");
-        int factoryIndex = cursor.getColumnIndex("factory");
-        int modelIndex = cursor.getColumnIndex("model");
-        int priceIndex = cursor.getColumnIndex("price");
-
-        while (cursor.moveToNext() && idIndex != -1 && typeIndex != -1 && factoryIndex != -1 && modelIndex != -1 && priceIndex != -1) {
-            Car car = new Car();
-            car.setId(cursor.getInt(idIndex));
-            car.setType(cursor.getString(typeIndex));
-            car.setFactory(cursor.getString(factoryIndex));
-            car.setModel(cursor.getString(modelIndex));
-            car.setPrice(cursor.getDouble(priceIndex));
-
-            carList.add(car);
-        }
-
-        cursor.close();
-        db.close();
-        return carList;
+    private void clearDatabase() {
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("DELETE FROM Car");
     }
 
     public boolean deleteCustomer(String email) {
@@ -225,6 +218,113 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
         db.close();
         return result != 0;
     }
+    public Cursor displayCustomerReservations(String email) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM Reservation WHERE customerEmail=?", new String[]{email});
+        return cursor;
+    }
+
+    public Cursor displayAllCars(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM Car", null);
+        return cursor;
+    }
+
+    public boolean deleteFavorite(String email, int carID) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // Specify the deletion condition in the whereClause parameter
+        String whereClause = "customerEmail = ? AND carID = ?";
+
+        // Specify the values for the placeholders in the whereArgs parameter
+        String[] whereArgs = {email, String.valueOf(carID)};
+
+        // Perform the deletion
+        int result = db.delete("Favorites", whereClause, whereArgs);
+
+        // Close the database
+        db.close();
+
+        // Return true if any rows were deleted, false otherwise
+        return result != 0;
+    }
+
+
+// -- TODO: in the java file, we invoke a getAllCars method, using Select * from Car, and we handle the resulting cursor in the java file
+//    public List<Car> getAllCars() {
+//        List<Car> carList = new ArrayList<>();
+//        SQLiteDatabase db = this.getReadableDatabase();
+//
+//        Cursor cursor = db.rawQuery("SELECT * FROM Car", null);
+//        int idIndex = cursor.getColumnIndex("id");
+//        int typeIndex = cursor.getColumnIndex("type");
+//        int factoryIndex = cursor.getColumnIndex("factory");
+//        int modelIndex = cursor.getColumnIndex("model");
+//        int priceIndex = cursor.getColumnIndex("price");
+//
+//        while (cursor.moveToNext() && idIndex != -1 && typeIndex != -1 && factoryIndex != -1 && modelIndex != -1 && priceIndex != -1) {
+//            Car car = new Car();
+//            car.setId(cursor.getInt(idIndex));
+//            car.setType(cursor.getString(typeIndex));
+//            car.setFactory(cursor.getString(factoryIndex));
+//            car.setModel(cursor.getString(modelIndex));
+//            car.setPrice(cursor.getDouble(priceIndex));
+//
+//            carList.add(car);
+//        }
+//
+//        cursor.close();
+//        db.close();
+//        return carList;
+//    }
+    // -- TODO: Delete it, as it is changed according to the Car class
+
+//    public boolean insertCar(Car car) {
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        ContentValues values = new ContentValues();
+//
+//        values.put("id", car.getId());
+//        values.put("type", car.getType());
+//        values.put("factory", car.getFactory());
+//        values.put("model", car.getModel());
+//        values.put("price", car.getPrice());
+//
+//        // Insert the values into the "Car" table
+//        long result = db.insert("Car", null, values);
+//        db.close();
+//        // If insertion is successful then result != -1
+//        return result != -1;
+//    }
+
+    // -- TODO: No need for the seed database as the info is gonna be got from the API
+//    public void seedDatabase() {
+//        clearDatabase();
+//
+//        // Create car
+//        String[] types = {"Sedan", "SUV", "Truck", "Coupe", "Convertible"};
+//        String[] factories = {"Toyota", "Honda", "Ford", "Chevrolet", "BMW"};
+//        String[] models = {"Camry", "Civic", "F-150", "Malibu", "3 Series"};
+//
+//        for (int i = 0; i < 25; i++) {
+//            // Randomly select values for type, factory, and model
+//            String type = types[i % types.length];
+//            String factory = factories[i % factories.length];
+//            String model = models[i % models.length];
+//
+//            // Create car objects with unique IDs and values
+//            Car car = new Car(
+//                    i + 1,
+//                    type,
+//                    factory,
+//                    model,
+//                    50000 + i * 1000
+//            );
+//
+//            // Insert each car into the database
+//            insertCar(car);
+//        }
+//    }
+
 
 
 }

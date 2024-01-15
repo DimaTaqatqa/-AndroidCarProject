@@ -13,6 +13,9 @@ import android.database.Cursor;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,9 +31,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        dataBaseHelper = new DataBaseHelper(this);
+
+        Admin admin;
+        try {
+            admin = new Admin("Ahmadsalah10@gmail.com", "Ahmad123@", "Ahmad", "Salah", "Male", "Palestine", "Jerusalem", "0599123456", Files.readAllBytes(Paths.get("C:\\Users\\NOVO\\Desktop\\H.JPG")));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        dataBaseHelper.insertAdmin(admin);
+
 
         connectButton = findViewById(R.id.connectButton);
-        dataBaseHelper = new DataBaseHelper(this);
 //        carList = dataBaseHelper.getAllCars();
 
         connectButton.setOnClickListener(new View.OnClickListener() {
