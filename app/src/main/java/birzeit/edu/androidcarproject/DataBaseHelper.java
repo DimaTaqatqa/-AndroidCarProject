@@ -161,6 +161,7 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
         db.close();
         return result != -1;
     }
+    // -- TODO:
     public boolean insertFavorites(Favorites favorites) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -218,6 +219,7 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
         db.close();
         return result != 0;
     }
+    // -- TODO: display all Cars' data in addition to the reservation thing
     public Cursor displayCustomerReservations(String email) {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM Reservation WHERE customerEmail=?", new String[]{email});

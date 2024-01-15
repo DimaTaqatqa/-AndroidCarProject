@@ -33,13 +33,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         dataBaseHelper = new DataBaseHelper(this);
 
-        Admin admin;
-        try {
-            admin = new Admin("Ahmadsalah10@gmail.com", "Ahmad123@", "Ahmad", "Salah", "Male", "Palestine", "Jerusalem", "0599123456", Files.readAllBytes(Paths.get("C:\\Users\\NOVO\\Desktop\\H.JPG")));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        dataBaseHelper.insertAdmin(admin);
+//        Admin admin;
+//        try {
+//            admin = new Admin("Ahmadsalah10@gmail.com", "Ahmad123@", "Ahmad", "Salah", "Male", "Palestine", "Jerusalem", "0599123456", Files.readAllBytes(Paths.get("C:\\Users\\NOVO\\Desktop\\H.JPG")));
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//        dataBaseHelper.insertAdmin(admin);
 
 
         connectButton = findViewById(R.id.connectButton);
