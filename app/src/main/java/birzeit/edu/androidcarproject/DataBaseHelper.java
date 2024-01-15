@@ -101,7 +101,7 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper{
         // Check in each table (Admin, and Customer) one by one.
         // Assuming the user_type is stored as 0 for Admin, 1 for Customer, so after the i+1 it
         // will give the right user_type
-        String[] tableNames = {"Admin", "Student"};
+        String[] tableNames = {"Admin", "Customer"};
 
         for (int i = 0; i < tableNames.length; i++) {
             if (i == 0) {

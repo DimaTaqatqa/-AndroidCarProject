@@ -12,10 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import com.hbb20.CountryCodePicker;
-
-//import com.hbb20.CountryCodePicker;
 
 public class SignUP extends AppCompatActivity {
     Button sign_up_button;
@@ -26,7 +23,7 @@ public class SignUP extends AppCompatActivity {
     EditText firstName_EditText;
     EditText lastName_EditText;
     EditText phone_EditText;
-    CountryCodePicker ccp;
+//    CountryCodePicker ccp;
     DataBaseHelper db;
 
 
@@ -43,7 +40,7 @@ public class SignUP extends AppCompatActivity {
         firstName_EditText = findViewById(R.id.firstNameInput);
         lastName_EditText = findViewById(R.id.lastNameInput);
         phone_EditText = findViewById(R.id.editTextPhone);
-        ccp = findViewById(R.id.ccp);
+//        ccp = findViewById(R.id.ccp);
 
         String[] gender_options = {"Male", "Female"};
         final Spinner genderSpinner = (Spinner) findViewById(R.id.spinner_gender);
@@ -73,7 +70,6 @@ public class SignUP extends AppCompatActivity {
             sign_up_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
                     if (validateFields()) {
                         String gender = genderSpinner.getSelectedItem().toString();
                         String country = countrySpinner.getSelectedItem().toString();
@@ -96,7 +92,8 @@ public class SignUP extends AppCompatActivity {
                             String phone = phone_EditText.getText().toString();
 
                             // After checking if the phone field is not empty
-                            String fullPhoneNumber = ccp.getFullNumber() + phone;
+//                            String fullPhoneNumber = ccp.getFullNumber() + phone;
+                            String fullPhoneNumber = phone;
 
                             // An admin is chosen
                             if (userTypeReceived == 1) {
@@ -118,7 +115,9 @@ public class SignUP extends AppCompatActivity {
                                     db.insertAdmin(admin);
                                     Toast.makeText(SignUP.this, "Successfully Signed Up!", Toast.LENGTH_LONG).show();
                                     Intent intent =new Intent(SignUP.this, RegistrationAndLogin.class);
-                                    startActivity(intent);                                }
+                                    startActivity(intent);
+                                    finish();
+                                }
                             }
                             // A customer is chosen
                             else if (userTypeReceived == 2) {
@@ -141,6 +140,7 @@ public class SignUP extends AppCompatActivity {
                                     Toast.makeText(SignUP.this, "Successfully Signed Up!", Toast.LENGTH_LONG).show();
                                     Intent intent =new Intent(SignUP.this, RegistrationAndLogin.class);
                                     startActivity(intent);
+                                    finish();
                                 }
                             } else {
                                 Toast.makeText(SignUP.this, "Error! Unknown user type.", Toast.LENGTH_LONG).show();

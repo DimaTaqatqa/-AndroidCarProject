@@ -25,7 +25,6 @@ public class ChooseRole extends AppCompatActivity {
                 Intent intent =new Intent(ChooseRole.this, SignUP.class);
                 intent.putExtra("userType", 1);
                 startActivity(intent);
-                finish();
             }
         });
 

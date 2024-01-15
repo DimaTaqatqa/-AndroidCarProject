@@ -45,7 +45,7 @@ public class RegistrationAndLogin extends AppCompatActivity {
             public void onClick(View view) {
                 DataBaseHelper db = new DataBaseHelper(RegistrationAndLogin.this);
 
-                String email = emailEditText.getText().toString();
+                String email = emailEditText.getText().toString().toLowerCase();
                 String password = editText_Password.getText().toString();
                 String hashedPassword = PasswordHasher.hashPassword(password);
 
@@ -84,6 +84,7 @@ public class RegistrationAndLogin extends AppCompatActivity {
 
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Clear all the activities above in the stack
                 startActivity(intent);
+                finish();
             }
         });
         signUpButton.setOnClickListener(new View.OnClickListener() {
