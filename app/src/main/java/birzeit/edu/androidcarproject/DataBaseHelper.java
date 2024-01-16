@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 17;
+    private static final int DATABASE_VERSION = 18;
     // Database Name
     private static final String DATABASE_NAME = "Cars_Dealer";
 
@@ -21,6 +21,7 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        Log.d("Database", "onCreate called");
         String createAdminTable = "CREATE TABLE Admin (" +
                 "email TEXT PRIMARY KEY," +
                 "password_hash TEXT," +
@@ -55,7 +56,7 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
                 "offer INTEGER," +
                 "year TEXT," +
                 "fuelType TEXT," +
-                "rating REAL,"+
+                "rating REAL," +
                 "accident TEXT);";
 
         String createReservationTable = "CREATE TABLE Reservation (" +
@@ -161,6 +162,7 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
         db.close();
         return result != -1;
     }
+
     // -- TODO:
     public boolean insertFavorites(Favorites favorites) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -219,6 +221,7 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
         db.close();
         return result != 0;
     }
+
     // -- TODO: display all Cars' data in addition to the reservation thing
     public Cursor displayCustomerReservations(String email) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -226,11 +229,20 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor displayAllCars(){
-        SQLiteDatabase db = this.getWritableDatabase();
+    // -- TODO: in the java file, we invoke a getAllCars method, using Select * from Car, and we handle the resulting cursor in the java file
+    public Cursor getAllCars() {
+        SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM Car", null);
         return cursor;
     }
+    public Cursor getCarById(int carId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM Car WHERE id = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(carId)});
+
+        return cursor;
+    }
+
 
     public boolean deleteFavorite(String email, int carID) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -250,83 +262,5 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
         // Return true if any rows were deleted, false otherwise
         return result != 0;
     }
-
-
-// -- TODO: in the java file, we invoke a getAllCars method, using Select * from Car, and we handle the resulting cursor in the java file
-//    public List<Car> getAllCars() {
-//        List<Car> carList = new ArrayList<>();
-//        SQLiteDatabase db = this.getReadableDatabase();
-//
-//        Cursor cursor = db.rawQuery("SELECT * FROM Car", null);
-//        int idIndex = cursor.getColumnIndex("id");
-//        int typeIndex = cursor.getColumnIndex("type");
-//        int factoryIndex = cursor.getColumnIndex("factory");
-//        int modelIndex = cursor.getColumnIndex("model");
-//        int priceIndex = cursor.getColumnIndex("price");
-//
-//        while (cursor.moveToNext() && idIndex != -1 && typeIndex != -1 && factoryIndex != -1 && modelIndex != -1 && priceIndex != -1) {
-//            Car car = new Car();
-//            car.setId(cursor.getInt(idIndex));
-//            car.setType(cursor.getString(typeIndex));
-//            car.setFactory(cursor.getString(factoryIndex));
-//            car.setModel(cursor.getString(modelIndex));
-//            car.setPrice(cursor.getDouble(priceIndex));
-//
-//            carList.add(car);
-//        }
-//
-//        cursor.close();
-//        db.close();
-//        return carList;
-//    }
-    // -- TODO: Delete it, as it is changed according to the Car class
-
-//    public boolean insertCar(Car car) {
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        ContentValues values = new ContentValues();
-//
-//        values.put("id", car.getId());
-//        values.put("type", car.getType());
-//        values.put("factory", car.getFactory());
-//        values.put("model", car.getModel());
-//        values.put("price", car.getPrice());
-//
-//        // Insert the values into the "Car" table
-//        long result = db.insert("Car", null, values);
-//        db.close();
-//        // If insertion is successful then result != -1
-//        return result != -1;
-//    }
-
-    // -- TODO: No need for the seed database as the info is gonna be got from the API
-//    public void seedDatabase() {
-//        clearDatabase();
-//
-//        // Create car
-//        String[] types = {"Sedan", "SUV", "Truck", "Coupe", "Convertible"};
-//        String[] factories = {"Toyota", "Honda", "Ford", "Chevrolet", "BMW"};
-//        String[] models = {"Camry", "Civic", "F-150", "Malibu", "3 Series"};
-//
-//        for (int i = 0; i < 25; i++) {
-//            // Randomly select values for type, factory, and model
-//            String type = types[i % types.length];
-//            String factory = factories[i % factories.length];
-//            String model = models[i % models.length];
-//
-//            // Create car objects with unique IDs and values
-//            Car car = new Car(
-//                    i + 1,
-//                    type,
-//                    factory,
-//                    model,
-//                    50000 + i * 1000
-//            );
-//
-//            // Insert each car into the database
-//            insertCar(car);
-//        }
-//    }
-
-
 
 }

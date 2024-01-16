@@ -4,6 +4,7 @@ package birzeit.edu.androidcarproject;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.util.List;
@@ -37,8 +38,16 @@ public class ConnectionAsyncTask extends AsyncTask<String, String, String> {
                 // Connection successful, update UI or perform other actions
                 ((MainActivity) activity).setButtonText("Connected");
                 ((MainActivity) activity).handleCarsList(cars);
-                Intent intent = new Intent(activity, RegistrationAndLogin.class);;
+                Intent intent = new Intent(activity, CustomerHomeActivity.class);;
                 activity.startActivity(intent);
+                /*for (Car car : cars) {
+                    boolean isInserted = ((MainActivity) activity).insertCarToDatabase(car);
+                    if (isInserted) {
+                        Log.d("Database", "Car inserted: " + car.toString());
+                    } else {
+                        Log.e("Database", "Error inserting car: " + car.toString());
+                    }
+                }*/
             } else {
                 // Display an error message for unsuccessful parsing
                 ((MainActivity) activity).setButtonText("Parsing Error");

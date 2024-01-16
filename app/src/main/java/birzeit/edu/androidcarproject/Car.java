@@ -1,13 +1,15 @@
 package birzeit.edu.androidcarproject;
 
-public class Car {
+import java.io.Serializable;
+
+public class Car implements Serializable {
     private int id;
     private String factoryName;
     private String type;
-    private int price;
+    private double price;
     private String model;
     private String name;
-    private int offer;
+    private double offer;
     private String year;
     private String fuelType;
     private double rating;
@@ -16,7 +18,7 @@ public class Car {
     public Car(){
 
     }
-    public Car(int id, String factoryName, String type, int price, String model, String name, int offer, String year, String fuelType, float rating, String accident) {
+    public Car(int id, String factoryName, String type, double price, String model, String name, double offer, String year, String fuelType, double rating, String accident) {
         this.id = id;
         this.factoryName = factoryName;
         this.type = type;
@@ -54,11 +56,11 @@ public class Car {
         this.type = type;
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
@@ -78,11 +80,11 @@ public class Car {
         this.name = name;
     }
 
-    public int getOffer() {
+    public double getOffer() {
         return offer;
     }
 
-    public void setOffer(int offer) {
+    public void setOffer(double offer) {
         this.offer = offer;
     }
 
@@ -106,7 +108,7 @@ public class Car {
         return rating;
     }
 
-    public void setRating(float rating) {
+    public void setRating(double rating) {
         this.rating = rating;
     }
 
@@ -118,6 +120,21 @@ public class Car {
         this.accident = accident;
     }
 
-
+    @Override
+    public String toString() {
+        return "Car{" +
+                "id=" + id +
+                ", factoryName='" + factoryName + '\'' +
+                ", type='" + type + '\'' +
+                ", price=" + price +
+                ", model='" + model + '\'' +
+                ", name='" + name + '\'' +
+                ", offer=" + offer +
+                ", year='" + year + '\'' +
+                ", fuelType='" + fuelType + '\'' +
+                ", rating=" + rating +
+                ", accident='" + accident + '\'' +
+                '}';
+    }
 }
 
