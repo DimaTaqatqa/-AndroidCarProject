@@ -25,7 +25,7 @@ public class RegistrationAndLogin extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration_and_login);
-        databaseHelper = new DataBaseHelper(this);
+        databaseHelper =new DataBaseHelper(RegistrationAndLogin.this,"Cars_Dealer",null,20);
 
         loginButton = findViewById(R.id.button_login);
         rememberMeCheckBox = findViewById(R.id.checkBox_rememberMe);
@@ -43,7 +43,7 @@ public class RegistrationAndLogin extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DataBaseHelper db = new DataBaseHelper(RegistrationAndLogin.this);
+                DataBaseHelper db = new DataBaseHelper(RegistrationAndLogin.this,"Cars_Dealer",null,20);
 
                 String email = emailEditText.getText().toString().toLowerCase();
                 String password = editText_Password.getText().toString();

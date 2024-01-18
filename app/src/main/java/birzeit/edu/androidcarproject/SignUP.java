@@ -31,7 +31,7 @@ public class SignUP extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-        db = new DataBaseHelper(this);
+        db = new DataBaseHelper(SignUP.this,"Cars_Dealer",null,20);
 
         sign_up_button = findViewById(R.id.signUpButton);
         email_EditText = findViewById(R.id.emailInput);
@@ -108,7 +108,7 @@ public class SignUP extends AppCompatActivity {
                                 admin.setCity(city);
                                 admin.setUserType(userTypeReceived);
 
-                                DataBaseHelper db = new DataBaseHelper(SignUP.this);
+                                DataBaseHelper db = db = new DataBaseHelper(SignUP.this,"Cars_Dealer",null,1);
                                 if (db.emailExists("Admin", admin.getEmail()) || db.emailExists("Customer", admin.getEmail())) {
                                     Toast.makeText(SignUP.this, "Email already exists!", Toast.LENGTH_SHORT).show();
                                 } else {
@@ -132,7 +132,7 @@ public class SignUP extends AppCompatActivity {
                                 customer.setCity(city);
                                 customer.setUserType(userTypeReceived);
 
-                                DataBaseHelper db = new DataBaseHelper(SignUP.this);
+                                DataBaseHelper db = db = new DataBaseHelper(SignUP.this,"Cars_Dealer",null,20);
                                 if (db.emailExists("Customer", customer.getEmail()) || db.emailExists("Admin", customer.getEmail())) {
                                     Toast.makeText(SignUP.this, "Email already exists!", Toast.LENGTH_SHORT).show();
                                 } else {

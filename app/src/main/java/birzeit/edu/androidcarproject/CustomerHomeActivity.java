@@ -17,7 +17,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import birzeit.edu.androidcarproject.databinding.ActivityCustomerHomeBinding;
 
 public class CustomerHomeActivity extends AppCompatActivity {
-
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityCustomerHomeBinding binding;
 

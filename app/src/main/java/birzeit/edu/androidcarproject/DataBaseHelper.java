@@ -11,12 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 18;
+    //private static final int DATABASE_VERSION = 19;
     // Database Name
-    private static final String DATABASE_NAME = "Cars_Dealer";
+    //private static final String DATABASE_NAME = "Cars_Dealer";
 
-    public DataBaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    public DataBaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+        super(context, name, factory, version);
     }
 
     @Override
@@ -79,8 +79,15 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+    public void onUpgrade(SQLiteDatabase db, int i, int i1) {
+        db.execSQL("DROP TABLE IF EXISTS Admin");
+        db.execSQL("DROP TABLE IF EXISTS Customer");
+        db.execSQL("DROP TABLE IF EXISTS Car");
+        db.execSQL("DROP TABLE IF EXISTS Reservation");
+        db.execSQL("DROP TABLE IF EXISTS Favorites");
 
+        // Recreate the tables
+        onCreate(db);
     }
 
     public boolean insertAdmin(Admin admin) {
@@ -210,6 +217,7 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
         return -1;
     }
 
+
     private void clearDatabase() {
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("DELETE FROM Car");
@@ -230,10 +238,47 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
     }
 
     // -- TODO: in the java file, we invoke a getAllCars method, using Select * from Car, and we handle the resulting cursor in the java file
-    public Cursor getAllCars() {
+    public List<Car> getAllCars() {
+        // Create a list to store the cars
+        List<Car> cars = new ArrayList<>();
+
+        // Create a SQLite database connection
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM Car", null);
-        return cursor;
+
+        // Define the SQL query
+        String query = "SELECT * FROM Car";
+
+        // Execute the query
+        Cursor cursor = db.rawQuery(query, null);
+
+        // Loop through the results
+        while (cursor.moveToNext()) {
+            // Extract the data
+            int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+            String factoryName = cursor.getString(cursor.getColumnIndexOrThrow("factoryName"));
+            String type = cursor.getString(cursor.getColumnIndexOrThrow("type"));
+            int price = cursor.getInt(cursor.getColumnIndexOrThrow("price"));
+            String model = cursor.getString(cursor.getColumnIndexOrThrow("model"));
+            String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+            int offer = cursor.getInt(cursor.getColumnIndexOrThrow("offer"));
+            String year = cursor.getString(cursor.getColumnIndexOrThrow("year"));
+            String fuelType = cursor.getString(cursor.getColumnIndexOrThrow("fuelType"));
+            double rating = cursor.getDouble(cursor.getColumnIndexOrThrow("rating"));
+            String accident = cursor.getString(cursor.getColumnIndexOrThrow("accident"));
+
+            // Create a new car object
+            Car car = new Car(id, factoryName, type, price, model, name, offer, year, fuelType, rating, accident);
+
+            // Add the car to the list
+            cars.add(car);
+        }
+
+        // Close the database connection
+        cursor.close();
+        db.close();
+
+        // Return the list of cars
+        return cars;
     }
     public Cursor getCarById(int carId) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -243,7 +288,94 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
         return cursor;
     }
 
+    public boolean isCarInFavorites(int carId, String customerEmail) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM Favorites WHERE carID = ? AND customerEmail = ?", new String[]{String.valueOf(carId), customerEmail});
 
+        boolean isFavorite = cursor.getCount() > 0;
+
+        cursor.close();
+        db.close();
+
+        return isFavorite;
+    }
+
+    public boolean deleteFavorites(int carId, String customerEmail) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int deletedRows = db.delete("Favorites", "carID = ? AND customerEmail = ?", new String[]{String.valueOf(carId), customerEmail});
+        db.close();
+
+        return deletedRows > 0;
+    }
+
+    public ArrayList<Car> getFavoriteCars(String customerEmail) {
+        ArrayList<Car> favoriteCars = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        try {
+            // Query to retrieve favorite cars based on customer email
+            String query = "SELECT * FROM Favorites INNER JOIN Cars ON Favorites.car_id = Cars.id WHERE Favorites.customer_email = ?";
+            cursor = db.rawQuery(query, new String[]{customerEmail});
+
+            // Get column indices only once to avoid repeated calls
+            int columnIndexId = cursor.getColumnIndex("id");
+            int columnIndexName = cursor.getColumnIndex("name");
+            int columnIndexType = cursor.getColumnIndex("type");
+            int columnIndexFactoryName = cursor.getColumnIndex("factory_name");
+            int columnIndexOffer = cursor.getColumnIndex("offer");
+            int columnIndexPrice = cursor.getColumnIndex("price");
+            int columnIndexModel = cursor.getColumnIndex("model");
+            int columnIndexYear = cursor.getColumnIndex("year");
+            int columnIndexFuelType = cursor.getColumnIndex("fuelType");
+            int columnIndexRating = cursor.getColumnIndex("rating");
+            int columnIndexAccident = cursor.getColumnIndex("accident");
+
+            // Iterate through the result set and add cars to the list
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    // Check if column indices are valid
+                    if (columnIndexId != -1 && columnIndexName != -1 && columnIndexType != -1 &&
+                            columnIndexFactoryName != -1 && columnIndexPrice != -1 && columnIndexModel != -1 &&
+                            columnIndexYear != -1 && columnIndexFuelType != -1 && columnIndexRating != -1 &&
+                            columnIndexAccident != -1 && columnIndexOffer != -1) {
+
+                        int carId = cursor.getInt(columnIndexId);
+                        String carName = cursor.getString(columnIndexName);
+                        String carType = cursor.getString(columnIndexType);
+                        String carFactory = cursor.getString(columnIndexFactoryName);
+                        double carPrice = cursor.getInt(columnIndexPrice);
+                        double carOffer = cursor.getInt(columnIndexOffer);
+                        String carModel = cursor.getString(columnIndexModel);
+                        String carYear = cursor.getString(columnIndexYear);
+                        String carFuelType = cursor.getString(columnIndexFuelType);
+                        double carRating = cursor.getDouble(columnIndexRating);
+                        String carAccident = cursor.getString(columnIndexAccident);
+
+                        // Create a Car object and add it to the list
+                        Car car = new Car(carId, carFactory, carType, carPrice, carModel , carName, carOffer, carYear, carFuelType, carRating, carAccident);
+                        favoriteCars.add(car);
+                    }
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            // Handle exceptions (e.g., log or throw)
+            e.printStackTrace();
+        } finally {
+            // Close the cursor to avoid memory leaks
+            if (cursor != null) {
+                cursor.close();
+            }
+            // Close the database
+            db.close();
+        }
+
+        return favoriteCars;
+    }
+
+
+    /*
     public boolean deleteFavorite(String email, int carID) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -261,6 +393,6 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
 
         // Return true if any rows were deleted, false otherwise
         return result != 0;
-    }
+    }*/
 
 }

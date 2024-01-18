@@ -40,14 +40,7 @@ public class ConnectionAsyncTask extends AsyncTask<String, String, String> {
                 ((MainActivity) activity).handleCarsList(cars);
                 Intent intent = new Intent(activity, CustomerHomeActivity.class);;
                 activity.startActivity(intent);
-                /*for (Car car : cars) {
-                    boolean isInserted = ((MainActivity) activity).insertCarToDatabase(car);
-                    if (isInserted) {
-                        Log.d("Database", "Car inserted: " + car.toString());
-                    } else {
-                        Log.e("Database", "Error inserting car: " + car.toString());
-                    }
-                }*/
+
             } else {
                 // Display an error message for unsuccessful parsing
                 ((MainActivity) activity).setButtonText("Parsing Error");

@@ -12,6 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import birzeit.edu.androidcarproject.Car;
+import birzeit.edu.androidcarproject.R;
+
 public class CarCardFragment extends Fragment {
 
     // Define UI elements
@@ -20,14 +23,19 @@ public class CarCardFragment extends Fragment {
             carPrice, carOffer, carRating;
     private ImageView favoriteButton;
     private Button reserveButton;
+    private boolean isFavorite = false;
 
     // Empty constructor is required
     public CarCardFragment() {
     }
 
     // Create a new instance of the fragment with necessary data
-    public static CarCardFragment newInstance() {
-        return new CarCardFragment();
+    public static CarCardFragment newInstance(Car car) {
+        CarCardFragment fragment = new CarCardFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("car", car);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -56,13 +64,6 @@ public class CarCardFragment extends Fragment {
 
         // Set up click listeners or other interactions as needed
 
-        reserveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Handle reserve button click
-                // You may want to show a dialog or navigate to another screen for reservation
-            }
-        });
 
         Bundle arguments = getArguments();
         if (arguments != null && arguments.containsKey("car")) {
@@ -82,4 +83,7 @@ public class CarCardFragment extends Fragment {
             // Example using Picasso: Picasso.get().load(car.getPhotoUrl()).into(carPhoto);
         }
     }
+
+
+
 }

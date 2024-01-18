@@ -33,46 +33,25 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="Factory Name"
-                    android:textSize="16sp" />
-
-                <TextView
                     android:id="@+id/factory_name"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="45dp"
                     android:layout_margin="10dp"
                     android:text=""
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="Name"
                     android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/name"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="45dp"
                     android:layout_margin="10dp"
                     android:text=""
                     android:textSize="16sp" />
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="Offer"
-                    android:textSize="16sp" />
-
-                <TextView
                     android:id="@+id/offer"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="40dp"
                     android:layout_margin="10dp"
                     android:text=""
                     android:textSize="16sp" />
@@ -87,46 +66,25 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="Type"
-                    android:textSize="16sp" />
-
-                <TextView
                     android:id="@+id/type"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="47dp"
                     android:layout_margin="10dp"
                     android:text=""
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="Model"
                     android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/model"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="41dp"
                     android:layout_margin="10dp"
                     android:text=""
                     android:textSize="16sp" />
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="Year"
-                    android:textSize="16sp" />
-
-                <TextView
                     android:id="@+id/year"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="45dp"
                     android:layout_margin="10dp"
                     android:text=""
                     android:textSize="16sp" />
@@ -149,32 +107,19 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="Fuel Type"
-                    android:textSize="16sp" />
-
-                <TextView
                     android:id="@+id/fuel_type"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="44dp"
                     android:layout_margin="10dp"
                     android:text=""
                     android:textSize="16sp" />
 
                 <!-- Add more rows as needed -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="Price"
-                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/price"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
                     android:layout_margin="10dp"
                     android:text=""
                     android:textSize="16sp" />
@@ -189,32 +134,19 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="Rating"
-                    android:textSize="16sp" />
-
-                <TextView
                     android:id="@+id/rating"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="46dp"
                     android:layout_margin="10dp"
                     android:text=""
                     android:textSize="16sp" />
 
                 <!-- Add more rows as needed -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="Accident"
-                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/accident"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:layout_margin="10dp"
                     android:text=""
                     android:textSize="16sp" />
@@ -234,7 +166,8 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:layout_weight="1"
-                android:text="Accept" />
+                android:backgroundTint="#CF2C2C"
+                android:text="Sumbit" />
 
             <Button
                 android:id="@+id/reject_button"
@@ -242,7 +175,8 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:layout_weight="1"
-                android:text="Reject" />
+                android:backgroundTint="#FFCF2C2C"
+                android:text="Cancel" />
 
         </LinearLayout>
 

@@ -2,20 +2,12 @@ package birzeit.edu.androidcarproject;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.database.Cursor;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,14 +16,11 @@ public class MainActivity extends AppCompatActivity {
     private Button connectButton;
     private List<Car> carList = new ArrayList<>();
 
-    private DataBaseHelper dataBaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        dataBaseHelper = new DataBaseHelper(this);
 
 
         connectButton = findViewById(R.id.connectButton);
@@ -45,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
         });
         // Call the method to print the details of the inserted car
     }
+
     public void setButtonText(String text) {
         connectButton.setText(text);
     }
@@ -52,13 +42,54 @@ public class MainActivity extends AppCompatActivity {
     public void handleCarsList(List<Car> cars) {
         // Handle the list of cars as needed, for example, fill them into an ArrayList
         if (cars != null) {
-            for (Car car : cars) {
-                System.out.println(car.toString());
+            // Create an instance of your database helper
+            DataBaseHelper dbHelper = new DataBaseHelper(MainActivity.this,"Cars_Dealer",null,20);
+
+            // Get a writable database
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+            // Begin a transaction to ensure atomicity
+            db.beginTransaction();
+
+            try {
+                // Drop the existing Car table if it exists
+                db.execSQL("DROP TABLE IF EXISTS Car");
+
+                // Recreate the Car table
+                dbHelper.onCreate(db);
+
+                // Insert each car into the database
+                for (Car car : cars) {
+                    boolean isInserted = dbHelper.insertCar(car);
+                    if (isInserted) {
+                        // Car inserted successfully
+                        Log.d("Database", "Car inserted successfully");
+                    } else {
+                        // Error inserting car
+                        Log.d("Database", "Error inserting car");
+                    }
+                }
+
+                // Set the transaction as successful
+                db.setTransactionSuccessful();
+            } catch (Exception e) {
+                // Handle the exception, log, or throw as needed
+                e.printStackTrace();
+            } finally {
+                // End the transaction
+                db.endTransaction();
+                // Close the database
+                db.close();
             }
         }
     }
-    public boolean insertCarToDatabase(Car car) {
-        return dataBaseHelper.insertCar(car);
+
+    private boolean insertCarIntoDatabase(Car car) {
+        // Create an instance of your database helper
+        DataBaseHelper dbHelper =new DataBaseHelper(MainActivity.this,"Cars_Dealer",null,20);
+
+        // Insert the car into the database
+        return dbHelper.insertCar(car);
     }
 
 }
