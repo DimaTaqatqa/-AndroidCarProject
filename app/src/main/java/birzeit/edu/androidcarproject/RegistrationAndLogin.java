@@ -72,10 +72,12 @@ public class RegistrationAndLogin extends AppCompatActivity {
                     case 1: // Admin
                         intent = new Intent(RegistrationAndLogin.this, MainActivity.class);
                         intent.putExtra("email", email);
+                        finish();
                         break;
                     case 2: // Customer
                         intent = new Intent(RegistrationAndLogin.this, CustomerHomeActivity.class);
                         intent.putExtra("email", email);
+                        finish();
                         break;
                     default:
                         Toast.makeText(RegistrationAndLogin.this, "Error! Unknown user type.", Toast.LENGTH_LONG).show();

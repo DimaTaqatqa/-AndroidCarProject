@@ -1,23 +1,35 @@
 package birzeit.edu.androidcarproject;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.hbb20.CountryCodePicker;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 //import com.hbb20.CountryCodePicker;
 
 public class SignUP extends AppCompatActivity {
+    private static final int PICK_IMAGE_REQUEST = 1;
+
     Button sign_up_button;
 
     EditText email_EditText;
@@ -26,8 +38,12 @@ public class SignUP extends AppCompatActivity {
     EditText firstName_EditText;
     EditText lastName_EditText;
     EditText phone_EditText;
-    CountryCodePicker ccp;
+   // CountryCodePicker ccp;
     DataBaseHelper db;
+    Button photoButton;
+    ImageView ivProfilePicture;
+
+
 
 
     @Override
@@ -43,7 +59,11 @@ public class SignUP extends AppCompatActivity {
         firstName_EditText = findViewById(R.id.firstNameInput);
         lastName_EditText = findViewById(R.id.lastNameInput);
         phone_EditText = findViewById(R.id.editTextPhone);
-        ccp = findViewById(R.id.ccp);
+       // ccp = findViewById(R.id.ccp);
+
+        photoButton = (Button) findViewById(R.id.photoUploadButton);
+        ivProfilePicture = findViewById(R.id.iv_profile_picture_admin);
+
 
         String[] gender_options = {"Male", "Female"};
         final Spinner genderSpinner = (Spinner) findViewById(R.id.spinner_gender);
@@ -96,7 +116,9 @@ public class SignUP extends AppCompatActivity {
                             String phone = phone_EditText.getText().toString();
 
                             // After checking if the phone field is not empty
-                            String fullPhoneNumber = ccp.getFullNumber() + phone;
+//                            String fullPhoneNumber = ccp.getFullNumber() + phone;
+                            String fullPhoneNumber = phone;
+
 
                             // An admin is chosen
                             if (userTypeReceived == 1) {
@@ -115,6 +137,15 @@ public class SignUP extends AppCompatActivity {
                                 if (db.emailExists("Admin", admin.getEmail()) || db.emailExists("Customer", admin.getEmail())) {
                                     Toast.makeText(SignUP.this, "Email already exists!", Toast.LENGTH_SHORT).show();
                                 } else {
+                                    BitmapDrawable drawable = (BitmapDrawable) ivProfilePicture.getDrawable();
+                                    Bitmap bitmap = drawable.getBitmap();
+
+                                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                                    byte[] photo = byteArrayOutputStream.toByteArray();
+
+                                    admin.setPhoto(photo);
+
                                     db.insertAdmin(admin);
                                     Toast.makeText(SignUP.this, "Successfully Signed Up!", Toast.LENGTH_LONG).show();
                                     Intent intent =new Intent(SignUP.this, RegistrationAndLogin.class);
@@ -137,6 +168,15 @@ public class SignUP extends AppCompatActivity {
                                 if (db.emailExists("Customer", customer.getEmail()) || db.emailExists("Admin", customer.getEmail())) {
                                     Toast.makeText(SignUP.this, "Email already exists!", Toast.LENGTH_SHORT).show();
                                 } else {
+                                    BitmapDrawable drawable = (BitmapDrawable) ivProfilePicture.getDrawable();
+                                    Bitmap bitmap = drawable.getBitmap();
+
+                                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                                    byte[] photo = byteArrayOutputStream.toByteArray();
+
+                                    customer.setPhoto(photo);
+
                                     db.insertCustomer(customer);
                                     Toast.makeText(SignUP.this, "Successfully Signed Up!", Toast.LENGTH_LONG).show();
                                     Intent intent =new Intent(SignUP.this, RegistrationAndLogin.class);
@@ -149,6 +189,44 @@ public class SignUP extends AppCompatActivity {
                     }
                 }
             });
+
+            photoButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(intent, PICK_IMAGE_REQUEST);
+                }
+            });
+        }
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            Uri uri = data.getData();
+            try {
+                // Get the dimensions of the View
+                int targetW = ivProfilePicture.getWidth();
+                int targetH = ivProfilePicture.getHeight();
+
+                // Get the dimensions of the bitmap
+                BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+                bmOptions.inJustDecodeBounds = true;
+                BitmapFactory.decodeStream(getContentResolver().openInputStream(uri), null, bmOptions);
+                int photoW = bmOptions.outWidth;
+                int photoH = bmOptions.outHeight;
+
+                int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
+
+                bmOptions.inJustDecodeBounds = false;
+                bmOptions.inSampleSize = scaleFactor;
+                bmOptions.inPurgeable = true; // if necessary purge pixels into disk
+
+                Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri), null, bmOptions);
+                ivProfilePicture.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 package birzeit.edu.androidcarproject;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -208,10 +209,118 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
         return -1;
     }
 
-    private void clearDatabase() {
+    public Cursor displayProfileData(String email) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // Use rawQuery with parameters to avoid SQL injection
+        Cursor cursor = db.rawQuery("SELECT * FROM Admin WHERE email = ?" +
+                " UNION ALL " +
+                "SELECT * FROM Customer WHERE email = ?", new String[]{email, email});
+
+        return cursor;
+    }
+
+    @SuppressLint("Range")
+    public int getUserType(String email) {
+        int userType = -1;
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // Use rawQuery with parameters to avoid SQL injection
+        Cursor cursor = db.rawQuery("SELECT user_type FROM Admin WHERE email = ?" +
+                " UNION ALL " +
+                "SELECT user_type FROM Customer WHERE email = ?", new String[]{email, email});
+
+        if (cursor.moveToFirst()) {
+            userType = cursor.getInt(cursor.getColumnIndex("user_type"));
+        }
+
+        // Close the cursor to free up resources
+        cursor.close();
+
+        // Return the user type
+        return userType;
+    }
+
+    public boolean updateAdmin(String email, Admin admin) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("first_name", admin.getFirstName());
+        values.put("last_name", admin.getLastName());
+        values.put("password_hash", admin.getPassword());
+        values.put("phone", admin.getPhone());
+
+        // Specify the WHERE clause to update the specific row
+        String whereClause = "email=?";
+        String[] whereArgs = {email};
+
+        // Update the Admin table
+        int numRowsAffected = db.update("Admin", values, whereClause, whereArgs);
+
+        // Close the database connection
+        db.close();
+
+        // Check if the update was successful
+        return numRowsAffected > 0;
+    }
+
+    public boolean updateCustomer(String email, Customer customer) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("first_name", customer.getFirstName());
+        values.put("last_name", customer.getLastName());
+        values.put("password_hash", customer.getPassword());
+        values.put("phone", customer.getPhone());
+
+        // Specify the WHERE clause to update the specific row
+        String whereClause = "email=?";
+        String[] whereArgs = {email};
+
+        // Update the Customer table
+        int numRowsAffected = db.update("Customer", values, whereClause, whereArgs);
+
+        // Close the database connection
+        db.close();
+
+        // Check if the update was successful
+        return numRowsAffected > 0;
+    }
+
+    public boolean updatePhoto(String email, int userType, byte[] newPhoto) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+
+        values.put("photo", newPhoto);  // Updated photo
+
+        // Specify the WHERE clause to update the specific row
+        String whereClause = "email=?";
+        String[] whereArgs = {email};
+        int numRowsAffected=0;
+        if(userType == 1)
+        // Update the Customer table
+            numRowsAffected = db.update("Admin", values, whereClause, whereArgs);
+        else if (userType==2) {
+            numRowsAffected = db.update("Customer", values, whereClause, whereArgs);
+
+        }
+
+        // Close the database connection
+        db.close();
+
+        // Check if the update was successful
+        return numRowsAffected > 0;
+    }
+
+
+
+    public void clearDatabase() {
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("DELETE FROM Car");
     }
+
+
 
     public boolean deleteCustomer(String email) {
         SQLiteDatabase db = this.getWritableDatabase();
