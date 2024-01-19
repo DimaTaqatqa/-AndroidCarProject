@@ -5,6 +5,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import java.text.ParseException;
@@ -189,7 +191,7 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
         // Check in each table (Admin, and Customer) one by one.
         // Assuming the user_type is stored as 0 for Admin, 1 for Customer, so after the i+1 it
         // will give the right user_type
-        String[] tableNames = {"Admin", "Student"};
+        String[] tableNames = {"Admin", "Customer"};
 
         for (int i = 0; i < tableNames.length; i++) {
             if (i == 0) {
@@ -334,6 +336,62 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
         Cursor cursor = db.rawQuery("SELECT * FROM Reservation WHERE customerEmail=?", new String[]{email});
         return cursor;
     }
+
+    @SuppressLint("Range")
+    public String getUsername(String email) {
+        String first = null, last = null;
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // Use rawQuery with parameters to avoid SQL injection
+        Cursor cursor = db.rawQuery("SELECT first_name, last_name FROM Admin WHERE email = ?" +
+                " UNION ALL " +
+                "SELECT first_name, last_name FROM Customer WHERE email = ?", new String[]{email, email});
+
+        if (cursor.moveToFirst()) {
+            first = cursor.getString(cursor.getColumnIndex("first_name"));
+            last = cursor.getString(cursor.getColumnIndex("last_name"));
+        }
+
+        // Close the cursor to free up resources
+        cursor.close();
+
+        // Close the database connection
+        db.close();
+
+        // Check if both first and last names are null, indicating that the email doesn't exist
+        if (first == null && last == null) {
+            return null; // or some default value indicating that the email doesn't exist
+        }
+
+        // Return the formatted username
+        return first + " " + last;
+    }
+
+    @SuppressLint("Range")
+    public byte[] getPhoto(String email) {
+        byte[] photo = new byte[0];
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // Use rawQuery with parameters to avoid SQL injection
+        Cursor cursor = db.rawQuery("SELECT photo FROM Admin WHERE email = ?" +
+                " UNION ALL " +
+                "SELECT photo FROM Customer WHERE email = ?", new String[]{email, email});
+
+        if (cursor.moveToFirst()) {
+            photo = cursor.getBlob(cursor.getColumnIndex("photo"));
+        }
+
+        // Close the cursor to free up resources
+        cursor.close();
+        // Return the user type
+
+        return photo;
+    }
+
+
+
+
 
     public Cursor displayAllCars(){
         SQLiteDatabase db = this.getWritableDatabase();

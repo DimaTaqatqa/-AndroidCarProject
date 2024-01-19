@@ -16,17 +16,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import org.w3c.dom.Text;
 
 import birzeit.edu.androidcarproject.DataBaseHelper;
 import birzeit.edu.androidcarproject.EditProfile;
 import birzeit.edu.androidcarproject.R;
-import birzeit.edu.androidcarproject.RegistrationAndLogin;
 import birzeit.edu.androidcarproject.SharedViewModel;
 import birzeit.edu.androidcarproject.databinding.FragmentProfileBinding;
 

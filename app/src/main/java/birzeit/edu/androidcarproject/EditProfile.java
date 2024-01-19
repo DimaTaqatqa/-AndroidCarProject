@@ -30,7 +30,6 @@ public class EditProfile extends AppCompatActivity {
     private int userType;
     private static final int PICK_IMAGE_REQUEST = 1;
 
-    private SharedViewModel sharedViewModel;
     ImageView ivProfilePicture;
     Button photoButton;
 

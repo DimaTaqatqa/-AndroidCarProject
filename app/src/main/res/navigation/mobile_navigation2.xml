@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation2"
+    app:startDestination="@+id/nav_delete_customer">
+
+    <fragment
+        android:id="@+id/nav_delete_customer"
+        android:name="birzeit.edu.androidcarproject.ui.deletecustomer.DeleteCustomerFragment"
+        android:label="@string/menu_delete"
+        tools:layout="@layout/fragment_delete_customer" />
+
+    <fragment
+        android:id="@+id/nav_add_admin"
+        android:name="birzeit.edu.androidcarproject.ui.addadmin.AddAdminFragment"
+        android:label="@string/menu_add"
+        tools:layout="@layout/fragment_add_admin" />
+
+    <fragment
+        android:id="@+id/nav_view_reserves"
+        android:name="birzeit.edu.androidcarproject.ui.viewreserves.ViewAllReservesFragment"
+        android:label="@string/menu_view"
+        tools:layout="@layout/fragment_view_all_reserves" />
+    <fragment
+        android:id="@+id/nav_logout_admin"
+        android:name="birzeit.edu.androidcarproject.ui.logoutadmin.AdminLogoutFragment"
+        android:label="@string/menu_logout"
+        tools:layout="@layout/fragment_admin_logout" />
+</navigation>

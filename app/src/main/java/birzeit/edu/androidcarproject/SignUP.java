@@ -20,12 +20,10 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.hbb20.CountryCodePicker;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-//import com.hbb20.CountryCodePicker;
 
 public class SignUP extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
@@ -38,12 +36,10 @@ public class SignUP extends AppCompatActivity {
     EditText firstName_EditText;
     EditText lastName_EditText;
     EditText phone_EditText;
-   // CountryCodePicker ccp;
+
     DataBaseHelper db;
     Button photoButton;
     ImageView ivProfilePicture;
-
-
 
 
     @Override
@@ -59,7 +55,7 @@ public class SignUP extends AppCompatActivity {
         firstName_EditText = findViewById(R.id.firstNameInput);
         lastName_EditText = findViewById(R.id.lastNameInput);
         phone_EditText = findViewById(R.id.editTextPhone);
-       // ccp = findViewById(R.id.ccp);
+        // ccp = findViewById(R.id.ccp);
 
         photoButton = (Button) findViewById(R.id.photoUploadButton);
         ivProfilePicture = findViewById(R.id.iv_profile_picture_admin);
@@ -87,13 +83,18 @@ public class SignUP extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent != null) {
             int userTypeReceived = intent.getIntExtra("userType", -1);
+            int nextIntent = intent.getIntExtra("nextIntentAdminHome", -1);
+//            Toast.makeText(SignUP.this, "nextIntent"+ nextIntent, Toast.LENGTH_LONG).show();
+
+            String AdminEmail = intent.getStringExtra("AdminEmail");
+//            Toast.makeText(SignUP.this, "Admin Email"+ AdminEmail, Toast.LENGTH_LONG).show();
+
             if (userTypeReceived != 1 && userTypeReceived != 2)
                 Toast.makeText(SignUP.this, "Error! Unknown user type.", Toast.LENGTH_LONG).show();
 
             sign_up_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
                     if (validateFields()) {
                         String gender = genderSpinner.getSelectedItem().toString();
                         String country = countrySpinner.getSelectedItem().toString();
@@ -118,7 +119,6 @@ public class SignUP extends AppCompatActivity {
                             // After checking if the phone field is not empty
 //                            String fullPhoneNumber = ccp.getFullNumber() + phone;
                             String fullPhoneNumber = phone;
-
 
                             // An admin is chosen
                             if (userTypeReceived == 1) {
@@ -148,8 +148,17 @@ public class SignUP extends AppCompatActivity {
 
                                     db.insertAdmin(admin);
                                     Toast.makeText(SignUP.this, "Successfully Signed Up!", Toast.LENGTH_LONG).show();
-                                    Intent intent =new Intent(SignUP.this, RegistrationAndLogin.class);
-                                    startActivity(intent);                                }
+                                    Intent intent;
+                                    // -- If the intent comes from the Admin drawer
+                                    if (nextIntent == 1) {
+                                        intent = new Intent(SignUP.this, AdminHomeActivity.class);
+                                        intent.putExtra("email", AdminEmail);
+                                    } else {
+                                        intent = new Intent(SignUP.this, RegistrationAndLogin.class);
+                                    }
+                                    startActivity(intent);
+                                    finish();
+                                }
                             }
                             // A customer is chosen
                             else if (userTypeReceived == 2) {
@@ -179,8 +188,9 @@ public class SignUP extends AppCompatActivity {
 
                                     db.insertCustomer(customer);
                                     Toast.makeText(SignUP.this, "Successfully Signed Up!", Toast.LENGTH_LONG).show();
-                                    Intent intent =new Intent(SignUP.this, RegistrationAndLogin.class);
+                                    Intent intent = new Intent(SignUP.this, RegistrationAndLogin.class);
                                     startActivity(intent);
+                                    finish();
                                 }
                             } else {
                                 Toast.makeText(SignUP.this, "Error! Unknown user type.", Toast.LENGTH_LONG).show();
@@ -199,6 +209,7 @@ public class SignUP extends AppCompatActivity {
             });
         }
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -252,7 +263,7 @@ public class SignUP extends AppCompatActivity {
             Toast.makeText(this, "Please enter a valid email", Toast.LENGTH_LONG).show();
             email_EditText.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
             isValid = false;
-        }else if (password.isEmpty() || password.length() < 5 || !password.matches("^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[@#$%^&+=])(?=\\S+$).{5,}$")) {
+        } else if (password.isEmpty() || password.length() < 5 || !password.matches("^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[@#$%^&+=])(?=\\S+$).{5,}$")) {
             Toast.makeText(this, "Fill the password field, it must not be less than 5 characters and must include at least 1\n" +
                     "character, 1 number, and one special character (@#$%^&+=)", Toast.LENGTH_LONG).show();
             password_EditText.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
@@ -261,7 +272,7 @@ public class SignUP extends AppCompatActivity {
             Toast.makeText(this, "Confirm password must match password", Toast.LENGTH_LONG).show();
             confirmPassword_editText.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
             isValid = false;
-        }  else if (firstName.isEmpty() || firstName.length() < 3) {
+        } else if (firstName.isEmpty() || firstName.length() < 3) {
             Toast.makeText(this, "First name must be more than 2 characters", Toast.LENGTH_LONG).show();
             firstName_EditText.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
             isValid = false;

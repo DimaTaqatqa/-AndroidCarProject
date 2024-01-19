@@ -39,12 +39,12 @@
                 android:layout_marginBottom="20dp"/>
             <ImageView
                 android:id="@+id/iv_inst_pic"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:scaleType="centerCrop"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
                 android:adjustViewBounds="true"
                 android:paddingBottom="30dp"
                 android:layout_gravity="center"
-                android:scaleType="fitCenter"
                 app:srcCompat="@drawable/login" />
 
             <!-- Email -->
