@@ -15,20 +15,20 @@ public class Car implements Serializable {
     private double rating;
     private String accident;
 
+    private String reservedTime;
+    private String reservedDate;
+
     private boolean favorite;
+    private boolean reserved;
 
-    public boolean isFavorite() {
-        return favorite;
-    }
+    private String reservedBy; // Add a field to store the email of the customer who reserved the car
 
-    public void setFavorite(boolean favorite) {
-        this.favorite = favorite;
-    }
 
-    public Car(){
+    public Car() {
 
     }
-    public Car(int id, String factoryName, String type, double price, String model, String name, double offer, String year, String fuelType, double rating, String accident) {
+
+    public Car(int id, String factoryName, String type, double price, String model, String name, double offer, String year, String fuelType, double rating, String accident, String reservedTime, String reservedDate) {
         this.id = id;
         this.factoryName = factoryName;
         this.type = type;
@@ -40,6 +40,10 @@ public class Car implements Serializable {
         this.fuelType = fuelType;
         this.rating = rating;
         this.accident = accident;
+        this.reservedBy = null; // Initialize reservedBy as null when the car is created
+        this.reservedTime = reservedTime;
+        this.reservedDate = reservedDate;
+
     }
 
     public int getId() {
@@ -128,6 +132,47 @@ public class Car implements Serializable {
 
     public void setAccident(String accident) {
         this.accident = accident;
+    }
+
+    public String getReservedBy() {
+        return reservedBy;
+    }
+
+    // Add a method to set the customer who reserved the car
+    public void setReservedBy(String reservedBy) {
+        this.reservedBy = reservedBy;
+    }
+
+    public String getReservedTime() {
+        return reservedTime;
+    }
+
+    public void setReservedTime(String reservedTime) {
+        this.reservedTime = reservedTime;
+    }
+
+    public String getReservedDate() {
+        return reservedDate;
+    }
+
+    public void setReservedDate(String reservedDate) {
+        this.reservedDate = reservedDate;
+    }
+
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
+    }
+
+    public boolean isReserved() {
+        return reserved;
+    }
+
+    public void setReserved(boolean reserved) {
+        this.reserved = reserved;
     }
 
     @Override

@@ -43,7 +43,7 @@ public class RegistrationAndLogin extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DataBaseHelper db = new DataBaseHelper(RegistrationAndLogin.this,"Cars_Dealer",null,20);
+                DataBaseHelper db = new DataBaseHelper(RegistrationAndLogin.this,"Cars_Dealer",null,21);
 
                 String email = emailEditText.getText().toString().toLowerCase();
                 String password = editText_Password.getText().toString();

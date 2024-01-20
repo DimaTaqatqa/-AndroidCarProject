@@ -47,4 +47,14 @@ public class Reservation {
     public void setTime(String time) {
         this.time = time;
     }
+
+    @Override
+    public String toString() {
+        return "Reservation{" +
+                "carID=" + carID +
+                ", customerEmail='" + customerEmail + '\'' +
+                ", date='" + date + '\'' +
+                ", time='" + time + '\'' +
+                '}';
+    }
 }

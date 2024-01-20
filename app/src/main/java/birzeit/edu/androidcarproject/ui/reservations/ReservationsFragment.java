@@ -16,47 +16,18 @@ import java.util.ArrayList;
 
 import birzeit.edu.androidcarproject.Car;
 import birzeit.edu.androidcarproject.CarAdapter;
+import birzeit.edu.androidcarproject.DataBaseHelper;
 import birzeit.edu.androidcarproject.R;
+import birzeit.edu.androidcarproject.Reservation;
 import birzeit.edu.androidcarproject.databinding.FragmentReservationsBinding;
 
 public class ReservationsFragment extends Fragment {
 
-    private ArrayList<Car> cars = new ArrayList<>();
+    private ArrayList<Car> reservations = new ArrayList<>();
     private String customerEmail; // Add a field to store the customer's email
 
     public ReservationsFragment() {
 
-        // Add the first car
-        Car car1 = new Car(
-                1,
-                "Toyota",
-                "Sedan",
-                30000,
-                "Camry",
-                "Camry XLE",
-                2000,
-                "2023",
-                "Gasoline",
-                4.5,
-                "No"
-        );
-        cars.add(car1);
-
-        // Add the second car
-        Car car2 = new Car(
-                2,
-                "Honda",
-                "SUV",
-                35000,
-                "CR-V",
-                "CR-V EX",
-                1500,
-                "2023",
-                "Hybrid",
-                4.7,
-                "No"
-        );
-        cars.add(car2);
     }
 
     @Override
@@ -68,8 +39,6 @@ public class ReservationsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        // Assuming you have an ArrayList<Car> named 'cars'
         RecyclerView recyclerView = view.findViewById(R.id.recyclerViewReservation);
 
         // Retrieve the customer's email from the intent extras
@@ -78,10 +47,31 @@ public class ReservationsFragment extends Fragment {
             customerEmail = extras.getString("email", "");
         }
 
-        CarAdapter carAdapter = new CarAdapter(cars, customerEmail);
+        // Fetch reservations from the database
+        reservations = fetchReservationsFromDatabase();
+
+        // Pass the reservations to the adapter
+        CarAdapter carAdapter = new CarAdapter(reservations, customerEmail);
+
+
+
 
         // Set the layout manager and adapter for the RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(carAdapter);
     }
+
+    private ArrayList<Car> fetchReservationsFromDatabase() {
+        // Create an instance of your database helper
+        DataBaseHelper dbHelper = new DataBaseHelper(requireContext(), "Cars_Dealer", null, 21);
+
+        // Retrieve reservations from the database
+        ArrayList<Car> reservations = dbHelper.getReservations(customerEmail);
+
+        // Close the database when done
+        dbHelper.close();
+
+        return reservations;
+    }
+
 }

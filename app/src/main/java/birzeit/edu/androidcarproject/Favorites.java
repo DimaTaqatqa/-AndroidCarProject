@@ -1,6 +1,7 @@
 package birzeit.edu.androidcarproject;
 
 public class Favorites {
+
     private int carID;
     private String customerEmail;
 
@@ -26,5 +27,13 @@ public class Favorites {
 
     public void setCustomerEmail(String customerEmail) {
         this.customerEmail = customerEmail;
+    }
+
+    @Override
+    public String toString() {
+        return "Favorites{" +
+                "carID=" + carID +
+                ", customerEmail='" + customerEmail + '\'' +
+                '}';
     }
 }

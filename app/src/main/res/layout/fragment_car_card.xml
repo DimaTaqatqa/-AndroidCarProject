@@ -10,28 +10,29 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:padding="8dp">
 
         <ImageView
             android:id="@+id/car_photo"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="60dp"
+            android:layout_height="72dp"
+            android:layout_alignParentStart="true"
             android:contentDescription="car Image"
-            app:srcCompat="@drawable/car"
-            android:layout_alignParentStart="true"/>
+            app:srcCompat="@drawable/car" />
 
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/car_photo"
             android:layout_marginStart="8dp"
+            android:layout_toEndOf="@id/car_photo"
             android:orientation="vertical">
 
             <!-- Rows for Car Information -->
 
             <!-- First Row -->
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -42,23 +43,23 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="2022"
-                    android:textSize="18sp"/>
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/car_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
                     android:text="BMW X5"
-                    android:textSize="18sp"
-                    android:layout_marginStart="8dp"/>
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/car_type"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
                     android:text="SUV"
-                    android:textSize="18sp"
-                    android:layout_marginStart="8dp"/>
+                    android:textSize="18sp" />
             </LinearLayout>
 
             <!-- Second Row -->
@@ -72,23 +73,23 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="BMW"
-                    android:textSize="18sp"/>
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/car_model"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
                     android:text="X5"
-                    android:textSize="18sp"
-                    android:layout_marginStart="8dp"/>
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/car_fuel_type"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
                     android:text="Petrol"
-                    android:textSize="18sp"
-                    android:layout_marginStart="8dp"/>
+                    android:textSize="18sp" />
             </LinearLayout>
 
             <!-- Third Row -->
@@ -102,33 +103,55 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="$50,000"
-                    android:textSize="18sp"/>
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/car_offer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
                     android:text="Special Offer"
-                    android:textSize="18sp"
-                    android:layout_marginStart="8dp"/>
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/car_rating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
                     android:text="4.5"
-                    android:textSize="18sp"
-                    android:layout_marginStart="8dp"/>
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/reservedTime"
+                    android:layout_width="19dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="" />
+
+                <TextView
+                    android:id="@+id/reservedDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="" />
             </LinearLayout>
 
         </LinearLayout>
 
         <!-- Buttons Column -->
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_alignParentEnd="true">
+            android:layout_alignParentEnd="true"
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/favorite"

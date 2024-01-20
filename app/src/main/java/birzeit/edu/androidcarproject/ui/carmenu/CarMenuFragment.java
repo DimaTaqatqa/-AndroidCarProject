@@ -57,7 +57,7 @@ public class CarMenuFragment extends Fragment {
     }
     private void fetchDataFromDatabase() {
         // Create an instance of your database helper
-        DataBaseHelper dbHelper = new DataBaseHelper(requireContext(), "Cars_Dealer", null, 20);
+        DataBaseHelper dbHelper = new DataBaseHelper(requireContext(), "Cars_Dealer", null, 21);
 
         // Retrieve the list of cars from the database
         List<Car> retrievedCars = dbHelper.getAllCars();

@@ -108,7 +108,7 @@ public class SignUP extends AppCompatActivity {
                                 admin.setCity(city);
                                 admin.setUserType(userTypeReceived);
 
-                                DataBaseHelper db = db = new DataBaseHelper(SignUP.this,"Cars_Dealer",null,1);
+                                DataBaseHelper db  = new DataBaseHelper(SignUP.this,"Cars_Dealer",null,21);
                                 if (db.emailExists("Admin", admin.getEmail()) || db.emailExists("Customer", admin.getEmail())) {
                                     Toast.makeText(SignUP.this, "Email already exists!", Toast.LENGTH_SHORT).show();
                                 } else {
@@ -132,7 +132,7 @@ public class SignUP extends AppCompatActivity {
                                 customer.setCity(city);
                                 customer.setUserType(userTypeReceived);
 
-                                DataBaseHelper db = db = new DataBaseHelper(SignUP.this,"Cars_Dealer",null,20);
+                                DataBaseHelper db = db = new DataBaseHelper(SignUP.this,"Cars_Dealer",null,21);
                                 if (db.emailExists("Customer", customer.getEmail()) || db.emailExists("Admin", customer.getEmail())) {
                                     Toast.makeText(SignUP.this, "Email already exists!", Toast.LENGTH_SHORT).show();
                                 } else {

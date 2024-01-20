@@ -1,7 +1,11 @@
 package birzeit.edu.androidcarproject;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +16,21 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import birzeit.edu.androidcarproject.Car;
 import birzeit.edu.androidcarproject.R;
 
 public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
+    private ArrayList<Reservation> reservations;
     private ArrayList<Car> cars;
+
     private String customerEmail; // Add a field to store the customer's email
 
     public CarAdapter(ArrayList<Car> cars, String customerEmail) {
@@ -47,7 +58,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView carYear, carName, carType, carFactory, carModel, carFuelType,
-                carPrice, carOffer, carRating, carAccident;
+                carPrice, carOffer, carRating, carAccident, reservedTime, reservedDate;
         private Button reserveButton;
         private ImageView favoriteButton;
 
@@ -64,17 +75,37 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
             carPrice = view.findViewById(R.id.car_price);
             carOffer = view.findViewById(R.id.car_offer);
             carRating = view.findViewById(R.id.car_rating);
+            reservedTime = view.findViewById(R.id.reservedTime);
+            reservedDate = view.findViewById(R.id.reservedDate);
             reserveButton = view.findViewById(R.id.reserveButton);
             favoriteButton = view.findViewById(R.id.favorite); // Assuming this is your favorite button ImageView
 
             // Set up click listener for reserve button
+            //TODO: handle the disable reserve if the it's revered by any customer so it will not show in the car menu
+
             reserveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int position = getAdapterPosition();
+                    DataBaseHelper dbHelper = new DataBaseHelper(itemView.getContext(), "Cars_Dealer", null, 21);
                     if (position != RecyclerView.NO_POSITION) {
                         Car clickedCar = cars.get(position);
-                        showReservationPopup(clickedCar);
+                        if (dbHelper.isCarReservedBy(clickedCar.getId(), customerEmail)) {
+                            // Car is already reserved by a customer
+                            //TODO: change the rserve button text to rserve with delete in database
+                            boolean deleted = dbHelper.deleteReservation(clickedCar.getId(), customerEmail);
+                            if (deleted) {
+                                Toast.makeText(itemView.getContext(), "Unreserved Successfully", Toast.LENGTH_SHORT).show();
+                                reserveButton.setText("Reserve");
+                            }
+
+                        } else if (dbHelper.isCarReserved(clickedCar.getId())) {
+                            reserveButton.setText("Reserved");
+                            reserveButton.setEnabled(false);
+
+                        } else {
+                            showReservationPopup(clickedCar);
+                        }
                     }
                 }
             });
@@ -100,12 +131,24 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
             carOffer.setText(String.valueOf(car.getOffer()));
             carRating.setText(String.valueOf(car.getRating()));
             //carAccident.setText(String.valueOf(car.getAccident()));
+            if (!car.getReservedTime().isEmpty() && !car.getReservedDate().isEmpty()) {
+                reservedTime.setText(car.getReservedTime());
+                reservedDate.setText(car.getReservedDate());
+            } else {
+                reservedTime.setText("");
+                reservedDate.setText("");
+            }
+
+            // Set the initial state of the favorite button based on SharedPreferences
+            boolean isFavorite = checkFavoriteState(car);
+            //favoriteButton.setImageResource(isFavorite ? R.drawable.like : R.drawable.unlike);
 
         }
 
         private void showReservationPopup(Car car) {
             // Inflate the reservation popup layout
             View popupView = LayoutInflater.from(itemView.getContext()).inflate(R.layout.reserve_popup_card, null);
+            DataBaseHelper dbHelper = new DataBaseHelper(itemView.getContext(), "Cars_Dealer", null, 21);
 
             // Create a dialog to display the popup
             AlertDialog.Builder builder = new AlertDialog.Builder(itemView.getContext());
@@ -151,17 +194,24 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
             acceptButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // Handle reservation acceptance logic
-                    // For example, you can close the dialog
-                    dialog.dismiss();
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        Car clickedCar = cars.get(position);
+
+                        // Car is not reserved, proceed with reservation
+                        clickedCar.setReservedBy(customerEmail);
+                        insertReservationIntoDatabase(clickedCar.getId());
+                        reserveButton.setText("Un-Reserve");
+
+                        dialog.dismiss();
+                    }
                 }
             });
 
             rejectButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // Handle reservation rejection logic
-                    // For example, you can close the dialog
+                    // close the dialog
                     dialog.dismiss();
                 }
             });
@@ -170,68 +220,99 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
             dialog.show();
         }
 
+        // Add this method to the ViewHolder class
+        private void insertReservationIntoDatabase(int carID) {
+            // Get the current date and time
+            String currentDate = getCurrentDate();
+            String currentTime = getCurrentTime();
+
+            // Create a Reservation object with current date, time, and other details
+            Reservation reservation = new Reservation(carID, customerEmail, currentDate, currentTime);
+
+            // Create an instance of your database helper
+            DataBaseHelper dbHelper = new DataBaseHelper(itemView.getContext(), "Cars_Dealer", null, 21);
+
+            // Insert the reservation into the database
+            boolean inserted = dbHelper.insertReservation(reservation);
+
+            // Handle the result if needed (e.g., show a toast)
+            if (inserted) {
+                Toast.makeText(itemView.getContext(), "Reservation added successfully", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(itemView.getContext(), "Error adding reservation, try again", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        // Helper method to get the current date
+        private String getCurrentDate() {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date currentDate = Calendar.getInstance().getTime();
+            return dateFormat.format(currentDate);
+        }
+
+        // Helper method to get the current time
+        private String getCurrentTime() {
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+            Date currentTime = Calendar.getInstance().getTime();
+            return timeFormat.format(currentTime);
+        }
+
         private void toggleFavoriteState(int position) {
             Car clickedCar = cars.get(position);
-            // Create a TransitionDrawable with your animation XML
-            TransitionDrawable transitionDrawable = (TransitionDrawable) favoriteButton.getDrawable();
 
-            // Toggle the state of the TransitionDrawable
+            TransitionDrawable transitionDrawable = (TransitionDrawable) favoriteButton.getDrawable();
+            // Perform the reverse transition animation
             transitionDrawable.reverseTransition(300); // You can adjust the duration as needed
 
             // After the transition, perform database operations
             performDatabaseOperation(clickedCar);
         }
 
-        private void performDatabaseOperation(Car car) {
-            // Create an instance of your database helper
-            DataBaseHelper dbHelper = new DataBaseHelper(itemView.getContext(), "Cars_Dealer", null, 20);
 
-            // Begin a transaction
-            SQLiteDatabase db = dbHelper.getWritableDatabase();
-            db.beginTransaction();
-
-            try {
-                // Check if the car is already in favorites
-                boolean isFavorite = dbHelper.isCarInFavorites(car.getId(), customerEmail);
-
-                // If the car is not in favorites, add it; otherwise, remove it
-                if (!isFavorite) {
-                    Favorites favorites = new Favorites(car.getId(), customerEmail);
-                    boolean inserted = dbHelper.insertFavorites(favorites);
-
-                    if (inserted) {
-                        // Car added to favorites successfully
-                        Toast.makeText(itemView.getContext(), "Car added to favorites", Toast.LENGTH_SHORT).show();
-                    } else {
-                        // Error adding car to favorites
-                        Toast.makeText(itemView.getContext(), "Error adding car to favorites", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    boolean deleted = dbHelper.deleteFavorites(car.getId(), customerEmail);
-
-                    if (deleted) {
-                        // Car removed from favorites successfully
-                        Toast.makeText(itemView.getContext(), "Car removed from favorites", Toast.LENGTH_SHORT).show();
-                    } else {
-                        // Error removing car from favorites
-                        Toast.makeText(itemView.getContext(), "Error removing car from favorites", Toast.LENGTH_SHORT).show();
-                    }
-
-                }
-
-                // Set the transaction as successful
-                db.setTransactionSuccessful();
-            } catch (Exception e) {
-                // Handle the exception, log, or throw as needed
-                e.printStackTrace();
-            } finally {
-                // End the transaction
-                db.endTransaction();
-                // Close the database
-                db.close();
-            }
+        private boolean checkFavoriteState(Car car) {
+            // Retrieve the favorite state from SharedPreferences
+            SharedPreferences preferences = itemView.getContext().getSharedPreferences("FavoriteState", Context.MODE_PRIVATE);
+            return preferences.getBoolean(String.valueOf(car.getId()), false);
         }
 
+        private void saveFavoriteState(Car car, boolean isFavorite) {
+            // Save the favorite state to SharedPreferences
+            SharedPreferences preferences = itemView.getContext().getSharedPreferences("FavoriteState", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean(String.valueOf(car.getId()), isFavorite);
+            editor.apply();
+        }
 
+        private void performDatabaseOperation(Car car) {
+            // Create an instance of your database helper
+            DataBaseHelper dbHelper = new DataBaseHelper(itemView.getContext(), "Cars_Dealer", null, 21);
+
+            // Check if the car is already in favorites
+            boolean isCarInFavorites = dbHelper.isCarInFavorites(car.getId(), customerEmail);
+
+            // If the car is not in favorites, add it; otherwise, remove it
+            if (!isCarInFavorites) {
+                Favorites favorites = new Favorites(car.getId(), customerEmail);
+                boolean inserted = dbHelper.insertFavorites(favorites);
+
+                if (inserted) {
+                    // Car added to favorites successfully
+                    Toast.makeText(itemView.getContext(), "Car added to favorites", Toast.LENGTH_SHORT).show();
+                } else {
+                    // Error adding car to favorites
+                    Toast.makeText(itemView.getContext(), "Error adding car to favorites", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                boolean deleted = dbHelper.deleteFavorites(car.getId(), customerEmail);
+
+                if (deleted) {
+                    // Car removed from favorites successfully
+                    Toast.makeText(itemView.getContext(), "Car removed from favorites", Toast.LENGTH_SHORT).show();
+                } else {
+                    // Error removing car from favorites
+                    Toast.makeText(itemView.getContext(), "Error removing car from favorites", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
     }
 }

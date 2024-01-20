@@ -134,8 +134,22 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
 
     public boolean insertCar(Car car) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
 
+        // Check if the car already exists in the database based on its ID
+        Cursor cursor = db.rawQuery("SELECT * FROM Car WHERE id = ?", new String[]{String.valueOf(car.getId())});
+
+        // If the cursor has a non-zero count, the car already exists
+        if (cursor.getCount() > 0) {
+            cursor.close();
+            db.close();
+            Log.d("Database", "Car already exists in the database");
+            return false;
+        }
+
+        // If the cursor is empty, the car does not exist, proceed with insertion
+        cursor.close();
+
+        ContentValues values = new ContentValues();
         values.put("id", car.getId());
         values.put("factoryName", car.getFactoryName());
         values.put("type", car.getType());
@@ -150,9 +164,19 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
 
         // Insert the values into the "Car" table
         long result = db.insert("Car", null, values);
+
+        // Close the database
         db.close();
+
         // If insertion is successful then result != -1
-        return result != -1;
+        if (result != -1) {
+            Log.d("Database", "Car inserted successfully");
+            return true;
+        } else {
+            // Error inserting car
+            Log.d("Database", "Error inserting car");
+            return false;
+        }
     }
 
     public boolean insertReservation(Reservation reservation) {
@@ -217,12 +241,6 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
         return -1;
     }
 
-
-    private void clearDatabase() {
-        SQLiteDatabase db = getWritableDatabase();
-        db.execSQL("DELETE FROM Car");
-    }
-
     public boolean deleteCustomer(String email) {
         SQLiteDatabase db = this.getWritableDatabase();
         int result = db.delete("Customer", "email = ?", new String[]{email});
@@ -237,6 +255,8 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
         return cursor;
     }
 
+
+    //______________________________________________________________________________
     // -- TODO: in the java file, we invoke a getAllCars method, using Select * from Car, and we handle the resulting cursor in the java file
     public List<Car> getAllCars() {
         // Create a list to store the cars
@@ -267,7 +287,7 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
             String accident = cursor.getString(cursor.getColumnIndexOrThrow("accident"));
 
             // Create a new car object
-            Car car = new Car(id, factoryName, type, price, model, name, offer, year, fuelType, rating, accident);
+            Car car = new Car(id, factoryName, type, price, model, name, offer, year, fuelType, rating, accident, "","");
 
             // Add the car to the list
             cars.add(car);
@@ -280,6 +300,7 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
         // Return the list of cars
         return cars;
     }
+
     public Cursor getCarById(int carId) {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * FROM Car WHERE id = ?";
@@ -310,89 +331,176 @@ public class DataBaseHelper extends android.database.sqlite.SQLiteOpenHelper {
 
     public ArrayList<Car> getFavoriteCars(String customerEmail) {
         ArrayList<Car> favoriteCars = new ArrayList<>();
-
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = null;
 
-        try {
-            // Query to retrieve favorite cars based on customer email
-            String query = "SELECT * FROM Favorites INNER JOIN Cars ON Favorites.car_id = Cars.id WHERE Favorites.customer_email = ?";
-            cursor = db.rawQuery(query, new String[]{customerEmail});
+        // Query to get all reserved cars for a specific customer
+        String query = "SELECT * FROM Favorites F INNER JOIN Car C ON F.carID = C.id WHERE F.customerEmail = ?";
+        String[] selectionArgs = (customerEmail != null) ? new String[]{customerEmail} : null;
 
-            // Get column indices only once to avoid repeated calls
-            int columnIndexId = cursor.getColumnIndex("id");
-            int columnIndexName = cursor.getColumnIndex("name");
-            int columnIndexType = cursor.getColumnIndex("type");
-            int columnIndexFactoryName = cursor.getColumnIndex("factory_name");
-            int columnIndexOffer = cursor.getColumnIndex("offer");
-            int columnIndexPrice = cursor.getColumnIndex("price");
-            int columnIndexModel = cursor.getColumnIndex("model");
-            int columnIndexYear = cursor.getColumnIndex("year");
-            int columnIndexFuelType = cursor.getColumnIndex("fuelType");
-            int columnIndexRating = cursor.getColumnIndex("rating");
-            int columnIndexAccident = cursor.getColumnIndex("accident");
+        Cursor cursor = db.rawQuery(query, selectionArgs);
 
-            // Iterate through the result set and add cars to the list
-            if (cursor != null && cursor.moveToFirst()) {
-                do {
-                    // Check if column indices are valid
-                    if (columnIndexId != -1 && columnIndexName != -1 && columnIndexType != -1 &&
-                            columnIndexFactoryName != -1 && columnIndexPrice != -1 && columnIndexModel != -1 &&
-                            columnIndexYear != -1 && columnIndexFuelType != -1 && columnIndexRating != -1 &&
-                            columnIndexAccident != -1 && columnIndexOffer != -1) {
+        // Get the column indices once to avoid repeated calls
+        int carIdIndex = cursor.getColumnIndex("id");
+        int factoryNameIndex = cursor.getColumnIndex("factoryName");
+        int typeIndex = cursor.getColumnIndex("type");
+        int priceIndex = cursor.getColumnIndex("price");
+        int modelIndex = cursor.getColumnIndex("model");
+        int nameIndex = cursor.getColumnIndex("name");
+        int offerIndex = cursor.getColumnIndex("offer");
+        int yearIndex = cursor.getColumnIndex("year");
+        int fuelTypeIndex = cursor.getColumnIndex("fuelType");
+        int ratingIndex = cursor.getColumnIndex("rating");
+        int accidentIndex = cursor.getColumnIndex("accident");
 
-                        int carId = cursor.getInt(columnIndexId);
-                        String carName = cursor.getString(columnIndexName);
-                        String carType = cursor.getString(columnIndexType);
-                        String carFactory = cursor.getString(columnIndexFactoryName);
-                        double carPrice = cursor.getInt(columnIndexPrice);
-                        double carOffer = cursor.getInt(columnIndexOffer);
-                        String carModel = cursor.getString(columnIndexModel);
-                        String carYear = cursor.getString(columnIndexYear);
-                        String carFuelType = cursor.getString(columnIndexFuelType);
-                        double carRating = cursor.getDouble(columnIndexRating);
-                        String carAccident = cursor.getString(columnIndexAccident);
+        // Iterate through the result set and add cars to the reservations list
+        while (cursor.moveToNext()) {
+            int carID = cursor.getInt(carIdIndex);
+            String factoryName = cursor.getString(factoryNameIndex);
+            String type = cursor.getString(typeIndex);
+            int price = cursor.getInt(priceIndex);
+            String model = cursor.getString(modelIndex);
+            String name = cursor.getString(nameIndex);
+            int offer = cursor.getInt(offerIndex);
+            String year = cursor.getString(yearIndex);
+            String fuelType = cursor.getString(fuelTypeIndex);
+            double rating = cursor.getDouble(ratingIndex);
+            String accident = cursor.getString(accidentIndex);
 
-                        // Create a Car object and add it to the list
-                        Car car = new Car(carId, carFactory, carType, carPrice, carModel , carName, carOffer, carYear, carFuelType, carRating, carAccident);
-                        favoriteCars.add(car);
-                    }
-                } while (cursor.moveToNext());
-            }
-        } catch (Exception e) {
-            // Handle exceptions (e.g., log or throw)
-            e.printStackTrace();
-        } finally {
-            // Close the cursor to avoid memory leaks
-            if (cursor != null) {
-                cursor.close();
-            }
-            // Close the database
-            db.close();
+            // Create a Car object and add it to the reservations list
+            Car car = new Car(carID, factoryName, type, price, model, name, offer, year, fuelType, rating, accident, "","");
+            favoriteCars.add(car);
         }
+
+        // Close the cursor and database
+        cursor.close();
+        db.close();
 
         return favoriteCars;
     }
 
+    public ArrayList<Favorites> getAllFavorites() {
+        ArrayList<Favorites> allFavorites = new ArrayList<>();
 
-    /*
-    public boolean deleteFavorite(String email, int carID) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        // Create a SQLite database connection
+        SQLiteDatabase db = this.getReadableDatabase();
 
-        // Specify the deletion condition in the whereClause parameter
-        String whereClause = "customerEmail = ? AND carID = ?";
+        // Define the SQL query to get carID and customerEmail from the Favorites table
+        String query = "SELECT * FROM Favorites";
 
-        // Specify the values for the placeholders in the whereArgs parameter
-        String[] whereArgs = {email, String.valueOf(carID)};
+        // Execute the query
+        Cursor cursor = db.rawQuery(query, null);
 
-        // Perform the deletion
-        int result = db.delete("Favorites", whereClause, whereArgs);
+        // Loop through the results
+        while (cursor.moveToNext()) {
+            // Extract the data
+            int carID = cursor.getInt(cursor.getColumnIndexOrThrow("carID"));
+            String customerEmail = cursor.getString(cursor.getColumnIndexOrThrow("customerEmail"));
 
-        // Close the database
+            // Create a new Favorites object
+            Favorites favorites = new Favorites(carID, customerEmail);
+
+            // Add the favorites to the list
+            allFavorites.add(favorites);
+        }
+
+        // Close the cursor and database connection
+        cursor.close();
         db.close();
 
-        // Return true if any rows were deleted, false otherwise
-        return result != 0;
-    }*/
+        return allFavorites;
+    }
+
+    //TODO: check all queries specially for buttons
+    // Check if a car is already reserved
+    public boolean isCarReservedBy(int carID, String customerEmail) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM Reservation WHERE carID = ? AND customerEmail = ?", new String[]{String.valueOf(carID), customerEmail});
+
+        boolean isReserved = cursor.getCount() > 0;
+
+        cursor.close();
+        db.close();
+
+        return isReserved;
+    }
+
+    public boolean deleteReservation(int carID, String customerEmail) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "carID = ? AND customerEmail = ?";
+        String[] whereArgs = {String.valueOf(carID), customerEmail};
+
+        int deletedRows = db.delete("Reservation", query, whereArgs);
+        db.close();
+
+        return deletedRows > 0;
+
+
+    }
+
+    // Check if the car is reserved
+    public boolean isCarReserved(int carID) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM Reservation WHERE carID = ?",
+                new String[]{String.valueOf(carID)});
+
+        boolean isReserved = cursor.getCount() > 0;
+
+        cursor.close();
+        db.close();
+
+        return isReserved;
+    }
+
+    public ArrayList<Car> getReservations(String customerEmail) {
+        ArrayList<Car> reservations = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // Query to get all reserved cars for a specific customer
+        String query = "SELECT * FROM Reservation R INNER JOIN Car C ON R.carID = C.id WHERE R.customerEmail = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{customerEmail});
+
+        // Get the column indices once to avoid repeated calls
+        int carIdIndex = cursor.getColumnIndex("id");
+        int factoryNameIndex = cursor.getColumnIndex("factoryName");
+        int typeIndex = cursor.getColumnIndex("type");
+        int priceIndex = cursor.getColumnIndex("price");
+        int modelIndex = cursor.getColumnIndex("model");
+        int nameIndex = cursor.getColumnIndex("name");
+        int offerIndex = cursor.getColumnIndex("offer");
+        int yearIndex = cursor.getColumnIndex("year");
+        int fuelTypeIndex = cursor.getColumnIndex("fuelType");
+        int ratingIndex = cursor.getColumnIndex("rating");
+        int accidentIndex = cursor.getColumnIndex("accident");
+        int dateIndex = cursor.getColumnIndex("date");
+        int timeIndex = cursor.getColumnIndex("time");
+
+        // Iterate through the result set and add cars to the reservations list
+        while (cursor.moveToNext()) {
+            int carID = cursor.getInt(carIdIndex);
+            String factoryName = cursor.getString(factoryNameIndex);
+            String type = cursor.getString(typeIndex);
+            int price = cursor.getInt(priceIndex);
+            String model = cursor.getString(modelIndex);
+            String name = cursor.getString(nameIndex);
+            int offer = cursor.getInt(offerIndex);
+            String year = cursor.getString(yearIndex);
+            String fuelType = cursor.getString(fuelTypeIndex);
+            double rating = cursor.getDouble(ratingIndex);
+            String accident = cursor.getString(accidentIndex);
+            String date = cursor.getString(dateIndex);
+            String time = cursor.getString(timeIndex);
+
+            // Create a Car object and add it to the reservations list
+            Car car = new Car(carID, factoryName, type, price, model, name, offer, year, fuelType, rating, accident,time,date);
+            reservations.add(car);
+        }
+
+        // Close the cursor and database
+        cursor.close();
+        db.close();
+
+        return reservations;
+    }
+
 
 }
