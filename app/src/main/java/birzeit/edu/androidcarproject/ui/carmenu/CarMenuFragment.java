@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -20,14 +22,12 @@ import birzeit.edu.androidcarproject.CarAdapter;
 import birzeit.edu.androidcarproject.DataBaseHelper;
 import birzeit.edu.androidcarproject.MainActivity;
 import birzeit.edu.androidcarproject.R;
-
 public class CarMenuFragment extends Fragment {
     private ArrayList<Car> cars = new ArrayList<>();
     private String customerEmail; // Add a field to store the customer's email
+    private CarAdapter carAdapter; // Declare carAdapter as a class-level variable
 
     public CarMenuFragment() {
-
-
     }
 
     @Override
@@ -43,18 +43,23 @@ public class CarMenuFragment extends Fragment {
 
         // Assuming you have an ArrayList<Car> named 'cars'
         RecyclerView recyclerView = view.findViewById(R.id.recyclerViewCarMenu);
+        SearchView searchView = view.findViewById(R.id.searchViewCarMenu);
+
         // Retrieve the customer's email from the intent extras
         Bundle extras = getActivity().getIntent().getExtras();
         if (extras != null) {
             customerEmail = extras.getString("email", "");
         }
 
-        CarAdapter carAdapter = new CarAdapter(cars, customerEmail);
+        carAdapter = new CarAdapter(cars, customerEmail);
 
         // Set the layout manager and adapter for the RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(carAdapter);
+
+
     }
+
     private void fetchDataFromDatabase() {
         // Create an instance of your database helper
         DataBaseHelper dbHelper = new DataBaseHelper(requireContext(), "Cars_Dealer", null, 21);
@@ -68,11 +73,5 @@ public class CarMenuFragment extends Fragment {
         // Add the retrieved cars to your existing list or use it as needed
         cars.addAll(retrievedCars);
 
-        // Add the retrieved cars to your existing list or use it as needed
-        this.cars.addAll(cars);
-        for (Car car : cars) {
-            Log.d("CarMenuFragment", car.toString());
-        }
     }
-
 }

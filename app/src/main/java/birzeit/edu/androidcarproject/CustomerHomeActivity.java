@@ -31,7 +31,7 @@ public class CustomerHomeActivity extends AppCompatActivity {
         binding.appBarCustomerHome.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Check Your offers, you have 20 offers today", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });

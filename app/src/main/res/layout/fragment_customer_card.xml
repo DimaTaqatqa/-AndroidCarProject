@@ -148,27 +148,18 @@
         <!-- Buttons Column -->
 
         <LinearLayout
-            android:layout_width="105dp"
-            android:layout_height="80dp"
+            android:layout_width="118dp"
+            android:layout_height="42dp"
             android:layout_alignParentEnd="true"
+            android:layout_marginEnd="0dp"
             android:orientation="vertical">
 
-
-            <ImageView
-                android:id="@+id/favorite"
-                android:layout_width="54dp"
-                android:layout_height="39dp"
-                android:layout_marginLeft="18dp"
-                android:src="@drawable/animation" />
-
-            <Button
-                android:id="@+id/reserveButton"
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:layout_marginTop="8dp"
-                android:backgroundTint="#CC4C4C"
-                android:text="Reserve"
-                android:textSize="10sp"
+            <TextView
+                android:id="@+id/customer_name"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text=""
+                android:textSize="16sp"
                 android:textStyle="bold" />
         </LinearLayout>
 

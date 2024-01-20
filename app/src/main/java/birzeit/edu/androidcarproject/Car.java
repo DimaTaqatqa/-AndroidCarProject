@@ -28,6 +28,23 @@ public class Car implements Serializable {
 
     }
 
+    public Car(int id, String factoryName, String type, double price, String model, String name, double offer, String year, String fuelType, double rating, String accident, String reservedBy, String reservedTime, String reservedDate) {
+        this.id = id;
+        this.factoryName = factoryName;
+        this.type = type;
+        this.price = price;
+        this.model = model;
+        this.name = name;
+        this.offer = offer;
+        this.year = year;
+        this.fuelType = fuelType;
+        this.rating = rating;
+        this.accident = accident;
+        this.reservedBy = reservedBy; // Initialize reservedBy as null when the car is created
+        this.reservedTime = reservedTime;
+        this.reservedDate = reservedDate;
+
+    }
     public Car(int id, String factoryName, String type, double price, String model, String name, double offer, String year, String fuelType, double rating, String accident, String reservedTime, String reservedDate) {
         this.id = id;
         this.factoryName = factoryName;
@@ -40,7 +57,7 @@ public class Car implements Serializable {
         this.fuelType = fuelType;
         this.rating = rating;
         this.accident = accident;
-        this.reservedBy = null; // Initialize reservedBy as null when the car is created
+        //this.reservedBy = reservedBy; // Initialize reservedBy as null when the car is created
         this.reservedTime = reservedTime;
         this.reservedDate = reservedDate;
 

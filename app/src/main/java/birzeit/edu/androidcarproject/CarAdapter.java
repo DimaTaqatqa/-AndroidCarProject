@@ -2,21 +2,20 @@ package birzeit.edu.androidcarproject;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.ContextCompat;
+
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.SimpleDateFormat;
@@ -24,18 +23,29 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+
 import birzeit.edu.androidcarproject.Car;
 import birzeit.edu.androidcarproject.R;
 
 public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
-    private ArrayList<Reservation> reservations;
     private ArrayList<Car> cars;
-
     private String customerEmail; // Add a field to store the customer's email
+
+    private ArrayList<Car> filteredCars;
+    private String filterCriteria; // Add a field for filtering criteria
+
 
     public CarAdapter(ArrayList<Car> cars, String customerEmail) {
         this.cars = cars;
         this.customerEmail = customerEmail;
+    }
+
+    // Constructor for CarMenuFragment without reservations
+    public CarAdapter(ArrayList<Car> cars, String customerEmail, String filterCriteria) {
+        this.cars = cars;
+        this.customerEmail = customerEmail;
+        this.filterCriteria = filterCriteria;
+        this.filteredCars = new ArrayList<>(cars);
     }
 
     @NonNull
@@ -80,9 +90,6 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
             reserveButton = view.findViewById(R.id.reserveButton);
             favoriteButton = view.findViewById(R.id.favorite); // Assuming this is your favorite button ImageView
 
-            // Set up click listener for reserve button
-            //TODO: handle the disable reserve if the it's revered by any customer so it will not show in the car menu
-
             reserveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -92,7 +99,6 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
                         Car clickedCar = cars.get(position);
                         if (dbHelper.isCarReservedBy(clickedCar.getId(), customerEmail)) {
                             // Car is already reserved by a customer
-                            //TODO: change the rserve button text to rserve with delete in database
                             boolean deleted = dbHelper.deleteReservation(clickedCar.getId(), customerEmail);
                             if (deleted) {
                                 Toast.makeText(itemView.getContext(), "Unreserved Successfully", Toast.LENGTH_SHORT).show();
@@ -120,6 +126,8 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
         }
 
         public void bind(Car car) {
+            DataBaseHelper dbHelper = new DataBaseHelper(itemView.getContext(), "Cars_Dealer", null, 21);
+
             // Bind data to UI elements
             carYear.setText(car.getYear());
             carName.setText(car.getName());
@@ -138,11 +146,29 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
                 reservedTime.setText("");
                 reservedDate.setText("");
             }
+            if (dbHelper.isCarReservedBy(car.getId(), customerEmail)) {
+                // Car is already reserved by a customer
+                reserveButton.setText("Un-Reserve");
 
+
+            } else if (dbHelper.isCarReserved(car.getId())) {
+                reserveButton.setText("Reserved");
+                reserveButton.setEnabled(false);
+
+            } else {
+                reserveButton.setText("Reserve");
+                reserveButton.setEnabled(true);
+            }
             // Set the initial state of the favorite button based on SharedPreferences
-            boolean isFavorite = checkFavoriteState(car);
-            //favoriteButton.setImageResource(isFavorite ? R.drawable.like : R.drawable.unlike);
+            boolean isCarInFavorites = dbHelper.isCarInFavorites(car.getId(), customerEmail);
+            if(isCarInFavorites){
+                favoriteButton.setImageResource(R.drawable.like);
 
+            }
+            else{
+                favoriteButton.setImageResource(R.drawable.unlike);
+
+            }
         }
 
         private void showReservationPopup(Car car) {
@@ -260,10 +286,6 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
         private void toggleFavoriteState(int position) {
             Car clickedCar = cars.get(position);
 
-            TransitionDrawable transitionDrawable = (TransitionDrawable) favoriteButton.getDrawable();
-            // Perform the reverse transition animation
-            transitionDrawable.reverseTransition(300); // You can adjust the duration as needed
-
             // After the transition, perform database operations
             performDatabaseOperation(clickedCar);
         }
@@ -298,6 +320,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
                 if (inserted) {
                     // Car added to favorites successfully
                     Toast.makeText(itemView.getContext(), "Car added to favorites", Toast.LENGTH_SHORT).show();
+                    favoriteButton.setImageResource(R.drawable.like);
                 } else {
                     // Error adding car to favorites
                     Toast.makeText(itemView.getContext(), "Error adding car to favorites", Toast.LENGTH_SHORT).show();
@@ -308,6 +331,8 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
                 if (deleted) {
                     // Car removed from favorites successfully
                     Toast.makeText(itemView.getContext(), "Car removed from favorites", Toast.LENGTH_SHORT).show();
+                    favoriteButton.setImageResource(R.drawable.unlike);
+
                 } else {
                     // Error removing car from favorites
                     Toast.makeText(itemView.getContext(), "Error removing car from favorites", Toast.LENGTH_SHORT).show();
