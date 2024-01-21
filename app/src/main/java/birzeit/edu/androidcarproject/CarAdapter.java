@@ -1,6 +1,7 @@
 package birzeit.edu.androidcarproject;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 
 import android.view.LayoutInflater;
@@ -28,12 +29,11 @@ import java.util.List;
 import birzeit.edu.androidcarproject.Car;
 import birzeit.edu.androidcarproject.R;
 
-public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder>{
+public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
     private ArrayList<Car> cars;
     private String customerEmail; // Add a field to store the customer's email
 
     private ArrayList<Car> filteredCars;
-    private String filterCriteria; // Add a field for filtering criteria
 
 
     public CarAdapter(ArrayList<Car> cars, String customerEmail) {
@@ -41,13 +41,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder>{
         this.customerEmail = customerEmail;
     }
 
-    // Constructor for CarMenuFragment without reservations
-    public CarAdapter(ArrayList<Car> cars, String customerEmail, String filterCriteria) {
-        this.cars = cars;
-        this.customerEmail = customerEmail;
-        this.filterCriteria = filterCriteria;
-        this.filteredCars = new ArrayList<>(cars);
-    }
+
     public void updateData(ArrayList<Car> updatedCars) {
         this.cars.clear();
         this.cars.addAll(updatedCars);
@@ -75,7 +69,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder>{
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView carYear, carName, carType, carFactory, carModel, carFuelType,
                 carPrice, carOffer, carRating, carAccident, reservedTime, reservedDate;
-        private Button reserveButton;
+        private Button reserveButton, rateButton;
         private ImageView favoriteButton;
 
         public ViewHolder(@NonNull View view) {
@@ -95,7 +89,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder>{
             reservedDate = view.findViewById(R.id.reservedDate);
             reserveButton = view.findViewById(R.id.reserveButton);
             favoriteButton = view.findViewById(R.id.favorite); // Assuming this is your favorite button ImageView
-
+            rateButton = view.findViewById(R.id.rateButton);
             reserveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -129,6 +123,15 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder>{
                     toggleFavoriteState(getAdapterPosition());
                 }
             });
+            rateButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Handle the button click, e.g., start a new activity
+                    Intent intent = new Intent(itemView.getContext(), RatingActivity.class);
+                    itemView.getContext().startActivity(intent);
+                }
+            });
+
         }
 
         public void bind(Car car) {
@@ -169,11 +172,10 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder>{
             }
             // Set the initial state of the favorite button based on SharedPreferences
             boolean isCarInFavorites = dbHelper.isCarInFavorites(car.getId(), customerEmail);
-            if(isCarInFavorites){
+            if (isCarInFavorites) {
                 favoriteButton.setImageResource(R.drawable.like);
 
-            }
-            else{
+            } else {
                 favoriteButton.setImageResource(R.drawable.unlike);
 
             }

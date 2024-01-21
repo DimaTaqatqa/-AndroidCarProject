@@ -22,7 +22,7 @@ public class CarCardFragment extends Fragment {
     private TextView carYear, carName, carType, carFactory, carModel, carFuelType,
             carPrice, carOffer, carRating;
     private ImageView favoriteButton;
-    private Button reserveButton;
+    private Button reserveButton,rateButton;
     private boolean isFavorite = false;
 
     // Empty constructor is required
@@ -61,6 +61,7 @@ public class CarCardFragment extends Fragment {
         carRating = view.findViewById(R.id.car_rating);
         favoriteButton = view.findViewById(R.id.favorite);
         reserveButton = view.findViewById(R.id.reserveButton);
+        rateButton = view.findViewById(R.id.rateButton);
 
         // Set up click listeners or other interactions as needed
 

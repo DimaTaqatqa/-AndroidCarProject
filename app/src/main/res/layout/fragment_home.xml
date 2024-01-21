@@ -6,17 +6,38 @@
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment">
 
-    <TextView
-        android:id="@+id/text_home"
+    <!-- fragment_home.xml -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".ui.home.HomeFragment">
+
+        <!-- Your beautiful layout design here -->
+        <ImageView
+            android:id="@+id/yourImageView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/cardealer"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:layout_margin="16dp"/>
+
+        <TextView
+            android:id="@+id/textHome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:backgroundTint="#C8B8E4"
+            android:fontFamily="serif"
+            android:lineSpacingExtra="4sp"
+            android:text="Car Dealer Group: \n\nYour destination for modern cars at competitive prices.\n We prioritize long-term customer loyalty through transparent pricing, exceptional service, and a commitment to quality.\n\nDrive with confidence with us."
+            android:textColor="#030007"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <!-- Add other views as needed -->
+
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

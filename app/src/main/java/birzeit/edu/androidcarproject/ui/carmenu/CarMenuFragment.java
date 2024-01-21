@@ -62,7 +62,20 @@ public class CarMenuFragment extends Fragment {
         recyclerView.setAdapter(carAdapter);
 
         // Set a query listener for the SearchView
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // Handle search query submission if needed
+                return false;
+            }
 
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // Handle search query change
+                filterCars(newText);
+                return true;
+            }
+        });
 
     }
 
@@ -81,12 +94,35 @@ public class CarMenuFragment extends Fragment {
 
     }
 
+    private List<Car> originalCars = new ArrayList<>();
+
     private void filterCars(String searchText) {
-        DataBaseHelper dbHelper = new DataBaseHelper(requireContext(), "Cars_Dealer", null, 21);
+        // If the original list is empty, initialize it with the current cars list
+        if (originalCars.isEmpty()) {
+            originalCars.addAll(cars);
+        }
 
         // Use the selected filter to determine which property to filter
         ArrayList<Car> filteredCars = new ArrayList<>();
-        filteredCars = dbHelper.searchCars(searchText);
+
+        // If the search text is empty, show all cars
+        if (searchText.isEmpty()) {
+            filteredCars.addAll(originalCars);
+        } else {
+            // Filter the cars based on the search text
+            for (Car car : cars) {
+                if (car.getName().toLowerCase().contains(searchText.toLowerCase()) ||
+                        car.getType().toLowerCase().contains(searchText.toLowerCase()) ||
+                        car.getFactoryName().toLowerCase().contains(searchText.toLowerCase()) ||
+                        String.valueOf(car.getPrice()).toLowerCase().contains(searchText.toLowerCase()) ||
+                        car.getModel().toLowerCase().contains(searchText.toLowerCase()) ||
+                        String.valueOf(car.getOffer()).toLowerCase().contains(searchText.toLowerCase()) ||
+                        car.getYear().toLowerCase().contains(searchText.toLowerCase()) ||
+                        car.getFuelType().toLowerCase().contains(searchText.toLowerCase())) {
+                    filteredCars.add(car);
+                }
+            }
+        }
 
         // Update the adapter with the filtered cars
         carAdapter.updateData(filteredCars);
