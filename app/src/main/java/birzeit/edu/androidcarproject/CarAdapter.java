@@ -22,12 +22,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 
 import birzeit.edu.androidcarproject.Car;
 import birzeit.edu.androidcarproject.R;
 
-public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
+public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder>{
     private ArrayList<Car> cars;
     private String customerEmail; // Add a field to store the customer's email
 
@@ -46,6 +47,11 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
         this.customerEmail = customerEmail;
         this.filterCriteria = filterCriteria;
         this.filteredCars = new ArrayList<>(cars);
+    }
+    public void updateData(ArrayList<Car> updatedCars) {
+        this.cars.clear();
+        this.cars.addAll(updatedCars);
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -139,6 +145,8 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.ViewHolder> {
             carOffer.setText(String.valueOf(car.getOffer()));
             carRating.setText(String.valueOf(car.getRating()));
             //carAccident.setText(String.valueOf(car.getAccident()));
+
+
             if (!car.getReservedTime().isEmpty() && !car.getReservedDate().isEmpty()) {
                 reservedTime.setText(car.getReservedTime());
                 reservedDate.setText(car.getReservedDate());

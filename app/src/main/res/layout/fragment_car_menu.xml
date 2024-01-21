@@ -6,7 +6,25 @@
     android:layout_height="match_parent"
     tools:context=".ui.carmenu.CarMenuFragment">
 
+
+
+    <!-- SearchView for filtering cars -->
+
     <!-- RecyclerView for displaying car cards -->
+
+    <android.widget.SearchView
+        android:id="@+id/searchViewCarMenu"
+        android:layout_width="303dp"
+        android:layout_height="45dp"
+        android:iconifiedByDefault="false"
+        android:queryHint="Search cars"
+        app:layout_constraintBottom_toTopOf="@id/recyclerViewCarMenu"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.38" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewCarMenu"
         android:layout_width="match_parent"
@@ -16,17 +34,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintVertical_bias="0"
         android:padding="8dp" />
-
-    <!-- SearchView for filtering cars -->
-    <android.widget.SearchView
-        android:id="@+id/searchViewCarMenu"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/recyclerViewCarMenu"
-        android:queryHint="Search cars"
-        android:iconifiedByDefault="false" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

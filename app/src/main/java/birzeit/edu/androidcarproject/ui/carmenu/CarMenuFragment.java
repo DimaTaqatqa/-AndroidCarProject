@@ -2,11 +2,13 @@ package birzeit.edu.androidcarproject.ui.carmenu;
 
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.SearchView;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,8 +22,8 @@ import java.util.List;
 import birzeit.edu.androidcarproject.Car;
 import birzeit.edu.androidcarproject.CarAdapter;
 import birzeit.edu.androidcarproject.DataBaseHelper;
-import birzeit.edu.androidcarproject.MainActivity;
 import birzeit.edu.androidcarproject.R;
+
 public class CarMenuFragment extends Fragment {
     private ArrayList<Car> cars = new ArrayList<>();
     private String customerEmail; // Add a field to store the customer's email
@@ -51,11 +53,15 @@ public class CarMenuFragment extends Fragment {
             customerEmail = extras.getString("email", "");
         }
 
+
         carAdapter = new CarAdapter(cars, customerEmail);
+
 
         // Set the layout manager and adapter for the RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(carAdapter);
+
+        // Set a query listener for the SearchView
 
 
     }
@@ -74,4 +80,16 @@ public class CarMenuFragment extends Fragment {
         cars.addAll(retrievedCars);
 
     }
+
+    private void filterCars(String searchText) {
+        DataBaseHelper dbHelper = new DataBaseHelper(requireContext(), "Cars_Dealer", null, 21);
+
+        // Use the selected filter to determine which property to filter
+        ArrayList<Car> filteredCars = new ArrayList<>();
+        filteredCars = dbHelper.searchCars(searchText);
+
+        // Update the adapter with the filtered cars
+        carAdapter.updateData(filteredCars);
+    }
+
 }
