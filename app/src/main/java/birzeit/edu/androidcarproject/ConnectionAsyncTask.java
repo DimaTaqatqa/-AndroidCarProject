@@ -38,7 +38,9 @@ public class ConnectionAsyncTask extends AsyncTask<String, String, String> {
                 // Connection successful, update UI or perform other actions
                 ((MainActivity) activity).setButtonText("Connected");
                 ((MainActivity) activity).handleCarsList(cars);
+
                 Intent intent = new Intent(activity, RegistrationAndLogin.class);
+
                 activity.startActivity(intent);
 
             } else {

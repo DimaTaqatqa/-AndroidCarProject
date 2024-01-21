@@ -15,6 +15,10 @@
         android:theme="@style/Theme.AndroidCarProject"
         tools:targetApi="31">
         <activity
+
+            android:name=".EditProfile"
+            android:exported="false" />
+        <activity
             android:name=".AdminHomeActivity"
             android:exported="false"
             android:label="@string/title_activity_admin_home"

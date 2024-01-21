@@ -11,6 +11,12 @@
         android:orientation="vertical"
         android:padding="16dp"
         tools:context=".SignUP">
+        <ImageView
+            android:id="@+id/iv_profile_picture_admin"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/login" />
 
         <EditText
             android:id="@+id/emailInput"
@@ -74,7 +80,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/nav_email"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
@@ -135,13 +141,7 @@
 
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/photoInput"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_gravity="center"
-            android:contentDescription="User Photo"
-            />
+
 
         <Button
             android:id="@+id/photoUploadButton"
