@@ -49,7 +49,7 @@ public class AdminHomeActivity extends AppCompatActivity {
         binding.appBarAdminHome.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Check Your offers, you have 20 offers today", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Check Your customer reservations, you have new reservations !!", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });

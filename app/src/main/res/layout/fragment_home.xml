@@ -31,7 +31,7 @@
             android:backgroundTint="#C8B8E4"
             android:fontFamily="serif"
             android:lineSpacingExtra="4sp"
-            android:text="Car Dealer Group: \n\nYour destination for modern cars at competitive prices.\n We prioritize long-term customer loyalty through transparent pricing, exceptional service, and a commitment to quality.\n\nDrive with confidence with us."
+            android:text="Car Dealer Group\n\nYour destination for modern cars at competitive prices.\n We prioritize long-term customer loyalty through transparent pricing, exceptional service, and a commitment to quality.\n\nDrive with confidence with us."
             android:textColor="#030007"
             android:textSize="20sp"
             android:textStyle="bold" />
