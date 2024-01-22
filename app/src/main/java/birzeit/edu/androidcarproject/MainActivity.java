@@ -22,7 +22,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         connectButton = findViewById(R.id.connectButton);
         connectButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -30,9 +29,17 @@ public class MainActivity extends AppCompatActivity {
                 // Execute the AsyncTask to fetch data
                 ConnectionAsyncTask connectionAsyncTask = new ConnectionAsyncTask(MainActivity.this);
                 connectionAsyncTask.execute("https://androidproject.free.beeceptor.com/cars");
+
             }
         });
-        // Call the method to print the details of the inserted car
+
+        DataBaseHelper dbHelper = new DataBaseHelper(MainActivity.this, "Cars_Dealer", null, 21);
+
+        String hashedPassword = PasswordHasher.hashPassword("Ahmad123@");
+        Admin admin = new Admin("Ahmadsalah@hotmail.com", hashedPassword, "Ahmad", "Salah", "Male", "Palestine", "Jerusalem", "970595959595", null);
+        admin.setUserType(1);
+        dbHelper.insertAdmin(admin);
+
     }
 
     public void setButtonText(String text) {
